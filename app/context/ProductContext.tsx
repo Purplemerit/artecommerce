@@ -31,7 +31,7 @@ interface ProductContextType {
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
 export function ProductProvider({ children }: { children: ReactNode }) {
-    const [products, setProducts] = useState<Product[]>([]);
+    const [products, setProducts] = useState<Product[]>(initialProducts);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -43,10 +43,17 @@ export function ProductProvider({ children }: { children: ReactNode }) {
             const response = await fetch('/api/products');
             if (response.ok) {
                 const data = await response.json();
-                setProducts(data.products);
+                if (data.products && data.products.length > 0) {
+                    setProducts(data.products);
+                } else {
+                    // Fallback to initialProducts if DB comes back empty
+                    setProducts(initialProducts);
+                }
             }
         } catch (error) {
             console.error("Failed to fetch products:", error);
+            // Fallback to initialProducts on error
+            setProducts(initialProducts);
         } finally {
             setLoading(false);
         }
