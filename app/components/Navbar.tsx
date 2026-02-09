@@ -35,9 +35,15 @@ export default function Navbar({ variant = "transparent" }: NavbarProps) {
 
                     {/* Desktop Nav */}
                     <div className="hidden md:flex space-x-8">
-                        {["All Products", "On Sale", "New Arrivals", "Art Collections", "About us"].map((item) => (
-                            <Link key={item} href="/shop" className={`${isLight ? 'text-gray-600 hover:text-black' : 'text-white/90 hover:text-white'} text-sm font-medium transition-colors`}>
-                                {item}
+                        {[
+                            { name: "All Products", href: "/shop" },
+                            { name: "On Sale", href: "/shop" },
+                            { name: "New Arrivals", href: "/shop" },
+                            { name: "Art Collections", href: "/shop" },
+                            { name: "About us", href: "/about" }
+                        ].map((item) => (
+                            <Link key={item.name} href={item.href} className={`${isLight ? 'text-gray-600 hover:text-black' : 'text-white/90 hover:text-white'} text-sm font-medium transition-colors`}>
+                                {item.name}
                             </Link>
                         ))}
                         {isAdmin && (
