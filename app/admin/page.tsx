@@ -111,7 +111,11 @@ export default function AdminDashboard() {
                             </div>
                             <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-black transition-colors" />
                         </div>
-                        <span className="text-orange-500 text-xs font-medium flex items-center mt-2">Requires attention</span>
+                        {stats.pendingOrders > 0 ? (
+                            <span className="text-orange-500 text-xs font-medium flex items-center mt-2">Requires attention</span>
+                        ) : (
+                            <span className="text-green-500 text-xs font-medium flex items-center mt-2">All caught up</span>
+                        )}
                     </Link>
                 </div>
 

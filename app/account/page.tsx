@@ -9,22 +9,21 @@ import { CheckCircle, LogOut, Package, Truck, Box, Calendar, User as UserIcon, M
 import { useAuth } from "../context/AuthContext";
 import { useOrders } from "../context/OrderContext";
 import { useRouter } from "next/navigation";
+import { getProductImage } from "../data/products";
 
 export default function AccountPage() {
     const [activeTab, setActiveTab] = useState("profile");
     const { user, logout, updateProfile, isLoading } = useAuth();
-    const { getUserOrders } = useOrders();
+    const { orders: allOrders, loading: ordersLoading } = useOrders();
     const router = useRouter();
-    const [orders, setOrders] = useState<any[]>([]);
 
     useEffect(() => {
         if (!isLoading && !user) {
             router.push("/login");
         }
-        if (user) {
-            setOrders(getUserOrders(user.id));
-        }
     }, [user, isLoading, router]);
+
+    const orders = user ? allOrders.filter(o => o.userId === user.id) : [];
 
     const [profileForm, setProfileForm] = useState({
         name: user?.name || "",
@@ -160,7 +159,11 @@ export default function AccountPage() {
 
                 {activeTab === "orders" && (
                     <div className="mb-24 space-y-6">
-                        {orders.length === 0 ? (
+                        {ordersLoading ? (
+                            <div className="bg-white p-12 text-center rounded-sm border border-gray-50">
+                                <h3 className="font-serif text-xl mb-2 text-gray-400 italic">Syncing with our gallery...</h3>
+                            </div>
+                        ) : orders.length === 0 ? (
                             <div className="bg-white p-12 text-center rounded-sm border border-gray-50">
                                 <Package className="w-12 h-12 text-gray-200 mx-auto mb-4" />
                                 <h3 className="font-serif text-xl mb-2">No orders yet</h3>
@@ -186,11 +189,19 @@ export default function AccountPage() {
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-3">
-                                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${order.status === "Paid" ? "bg-green-100 text-green-600" : "bg-yellow-100 text-yellow-600"
+                                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${['paid', 'delivered'].includes(order.status?.toLowerCase()) ? "bg-green-100 text-green-600" :
+                                                    order.status?.toLowerCase() === 'shipped' ? "bg-blue-100 text-blue-600" :
+                                                        order.status?.toLowerCase() === 'cancelled' ? "bg-red-100 text-red-600" :
+                                                            "bg-yellow-100 text-yellow-600"
                                                 }`}>
                                                 {order.status}
                                             </span>
-                                            <button className="text-xs font-bold text-black border border-gray-200 px-4 py-1.5 hover:bg-white transition-colors">Details</button>
+                                            <button
+                                                onClick={() => router.push(`/success?orderId=${order.id}&customerName=${user.name}`)}
+                                                className="text-xs font-bold text-black border border-gray-200 px-4 py-1.5 hover:bg-white transition-colors"
+                                            >
+                                                Details
+                                            </button>
                                         </div>
                                     </div>
 
@@ -229,10 +240,15 @@ export default function AccountPage() {
                                             {order.items.map((item: any, idx: number) => (
                                                 <div key={idx} className="flex items-center py-4 gap-6">
                                                     <div className="relative w-16 h-20 bg-gray-100 rounded-sm overflow-hidden">
-                                                        <Image src={item.image} alt={item.name} fill className="object-cover" />
+                                                        <Image
+                                                            src={getProductImage(item.product?.images[0] || "")}
+                                                            alt={item.product?.name || "Product"}
+                                                            fill
+                                                            className="object-cover"
+                                                        />
                                                     </div>
                                                     <div className="flex-1">
-                                                        <h4 className="text-sm font-medium">{item.name}</h4>
+                                                        <h4 className="text-sm font-medium">{item.product?.name || "Premium Artwork"}</h4>
                                                         <p className="text-xs text-gray-400">Qty: {item.quantity}</p>
                                                     </div>
                                                     <p className="text-sm font-bold">${(item.price * item.quantity).toFixed(2)}</p>

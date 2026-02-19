@@ -11,7 +11,7 @@ import { ChevronLeft, Search, Filter, ArrowDownCircle, MoreHorizontal, Truck, Pa
 
 export default function AdminOrdersPage() {
     const { isAdmin } = useAuth();
-    const { orders, updateOrderStatus } = useOrders();
+    const { orders, loading, updateOrderStatus } = useOrders();
     const router = useRouter();
     const [search, setSearch] = useState("");
 
@@ -21,11 +21,28 @@ export default function AdminOrdersPage() {
 
     const filteredOrders = orders.filter(o =>
         o.id.toLowerCase().includes(search.toLowerCase()) ||
-        o.customerName.toLowerCase().includes(search.toLowerCase())
+        (o.customerName && o.customerName.toLowerCase().includes(search.toLowerCase()))
     );
 
-    const handleStatusUpdate = (orderId: string, status: Order["status"], shipment?: Order["shipmentStatus"]) => {
-        updateOrderStatus(orderId, status, shipment);
+    const handleStatusUpdate = (orderId: string, currentStatus: Order["status"], shipment: Order["shipmentStatus"]) => {
+        let newStatus = currentStatus;
+
+        // Auto-transition overall status based on shipment status
+        if (shipment === "Delivered") {
+            newStatus = "DELIVERED";
+        } else if (shipment === "In Transit" || shipment === "Out for Delivery") {
+            // Only upgrade to SHIPPED if it's currently PENDING or PAID
+            if (currentStatus === "PENDING" || currentStatus === "PAID") {
+                newStatus = "SHIPPED";
+            }
+        } else if (shipment === "Processing") {
+            // Keep existing status unless it's SHIPPED/DELIVERED (allow reverting if needed)
+            if (currentStatus === "SHIPPED" || currentStatus === "DELIVERED") {
+                newStatus = "PAID";
+            }
+        }
+
+        updateOrderStatus(orderId, newStatus, shipment);
     };
 
     if (!isAdmin) return null;
@@ -77,7 +94,11 @@ export default function AdminOrdersPage() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                                {filteredOrders.length === 0 ? (
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={6} className="px-6 py-12 text-center text-gray-400 italic">Fetching orders...</td>
+                                    </tr>
+                                ) : filteredOrders.length === 0 ? (
                                     <tr>
                                         <td colSpan={6} className="px-6 py-12 text-center text-gray-400">No orders found.</td>
                                     </tr>
@@ -93,7 +114,9 @@ export default function AdminOrdersPage() {
                                                 <p className="text-xs text-gray-500">{order.customerEmail}</p>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${order.status === "Paid" ? "bg-green-50 text-green-600 border-green-100" : "bg-yellow-50 text-yellow-600 border-yellow-100"
+                                                <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${['paid', 'delivered'].includes(order.status?.toLowerCase()) ? "bg-green-50 text-green-600 border-green-100" :
+                                                        order.status?.toLowerCase() === 'shipped' ? "bg-blue-50 text-blue-600 border-blue-100" :
+                                                            "bg-yellow-50 text-yellow-600 border-yellow-100"
                                                     }`}>
                                                     {order.status}
                                                 </span>

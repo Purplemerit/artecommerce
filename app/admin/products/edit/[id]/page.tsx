@@ -52,16 +52,30 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
         }));
     };
 
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
-        if (files && files[0]) {
+        if (files && files.length > 0) {
             setUploading(true);
-            setTimeout(() => {
-                const url = URL.createObjectURL(files[0]);
-                setPreviewImages(prev => [...prev, url]);
-                setFormData(prev => ({ ...prev, images: [...(prev.images || []), url] }));
+            try {
+                const file = files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setPreviewImages(prev => [...prev, data.url]);
+                    setFormData(prev => ({ ...prev, images: [...(prev.images || []), data.url] }));
+                }
+            } catch (error) {
+                console.error("Upload failed:", error);
+            } finally {
                 setUploading(false);
-            }, 1000);
+            }
         }
     };
 
@@ -92,10 +106,10 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
         <main className="min-h-screen bg-[#Fdfdfd]">
             <Navbar variant="light" />
 
-            <div className="pt-24 pb-24 px-4 max-w-5xl mx-auto">
+            <div className="pt-32 pb-24 px-4 max-w-5xl mx-auto">
                 <form onSubmit={handleSubmit}>
                     {/* Header */}
-                    <div className="flex justify-between items-center mb-8 sticky top-20 bg-[#Fdfdfd] z-30 py-4 border-b border-gray-100">
+                    <div className="flex justify-between items-center mb-10 py-4 border-b border-gray-100">
                         <div className="flex items-center gap-4">
                             <Link href="/admin" className="p-2 hover:bg-gray-100 rounded-full transition-colors">
                                 <ChevronLeft className="w-5 h-5" />
@@ -229,7 +243,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 
                         {/* Right Column - Settings */}
                         <div className="space-y-8">
-                            <div className="bg-white border border-gray-100 p-6 rounded-sm sticky top-32">
+                            <div className="bg-white border border-gray-100 p-6 rounded-sm">
                                 <h3 className="font-serif text-xl mb-4">Settings</h3>
                                 <div className="space-y-6">
                                     <div className="space-y-2">

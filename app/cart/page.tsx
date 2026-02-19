@@ -157,20 +157,13 @@ export default function CartPage() {
 
                         <div className="space-y-3 mb-6">
                             <p className="text-xs font-medium">Promotions:</p>
-                            <div className="bg-gray-50 border border-gray-100 rounded px-3 py-2 flex justify-between text-xs items-center">
-                                <span className="flex items-center text-gray-600">🏷️ NEWCUSTOMER_1234 (-5%)</span>
-                                <span className="text-green-600">-$4.69</span>
-                            </div>
-                            <div className="flex justify-between text-xs text-green-600 font-medium">
-                                <span>All Your Discounts:</span>
-                                <span>-$4.69</span>
-                            </div>
+                            <div className="text-xs text-gray-400 italic">No promotions applied</div>
                         </div>
 
                         <div className="border-t border-gray-100 pt-4 mb-6">
                             <div className="flex justify-between items-end">
                                 <span className="font-bold text-gray-900">Grand total:</span>
-                                <span className="font-bold text-xl">${(cartTotal - 4.69).toFixed(2)}</span>
+                                <span className="font-bold text-xl">${cartTotal.toFixed(2)}</span>
                             </div>
                         </div>
 

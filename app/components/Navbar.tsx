@@ -1,118 +1,153 @@
 "use client";
 
 import Link from "next/link";
-import { Search, ShoppingBag, User, Menu, X, Heart } from "lucide-react";
+import Image from "next/image";
+import { Search, ShoppingBag, Menu, X, User } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
-import { useWishlist } from "../context/WishlistContext";
-import { useAuth } from "../context/AuthContext";
+import { useRouter } from "next/navigation";
 
 interface NavbarProps {
     variant?: "transparent" | "light";
 }
 
-export default function Navbar({ variant = "transparent" }: NavbarProps) {
+export default function Navbar({ variant }: NavbarProps = {}) {
     const [isOpen, setIsOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
     const { cart } = useCart();
-    const { wishlist } = useWishlist();
-    const { isAdmin } = useAuth(); // Add this line
+    const router = useRouter();
 
-    const isLight = variant === "light";
-    const textColor = isLight ? "text-black" : "text-white";
-    const borderColor = isLight ? "border-gray-200" : "border-white/10";
-    const badgeColor = isLight ? "bg-black text-white" : "bg-white text-black";
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            router.push(`/shop?q=${encodeURIComponent(searchQuery.trim())}`);
+        }
+    };
+
+    const navLinks = [
+        { name: "All Products", href: "/shop" },
+        { name: "On Sale", href: "/sale" },
+        { name: "New Arrivals", href: "/new-arrivals" },
+        { name: "Art Collections", href: "/collections" },
+        { name: "About us", href: "/about" }
+    ];
 
     return (
-        <nav className={`absolute top-0 left-0 w-full z-50 ${isLight ? 'bg-white' : 'bg-transparent'} ${textColor} border-b ${borderColor}`}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center h-20">
+        <div className="absolute top-0 left-0 w-full z-50 pt-8 px-10 pointer-events-none">
+            {/* The navbar container itself has pointer-events-auto to allow interaction */}
+            <nav className="max-w-[1360px] mx-auto bg-white text-black shadow-sm pointer-events-auto transition-all duration-300 py-2 px-3 rounded-lg">
+                <div className="flex justify-between items-center min-h-[40px]">
                     {/* Logo */}
                     <div className="flex-shrink-0 flex items-center">
-                        <Link href="/" className={`rounded-full p-2 w-8 h-8 flex items-center justify-center font-serif font-bold text-xl ${isLight ? 'bg-black text-white' : 'bg-white text-black'}`}>
-                            A
+                        <Link href="/" className="relative w-8 h-8 flex items-center justify-center">
+                            <Image
+                                src="/images/logo.svg"
+                                alt="Logo"
+                                fill
+                                className="object-contain"
+                                priority
+                            />
                         </Link>
                     </div>
 
-                    {/* Desktop Nav */}
-                    <div className="hidden md:flex space-x-8">
-                        {[
-                            { name: "All Products", href: "/shop" },
-                            { name: "On Sale", href: "/shop" },
-                            { name: "New Arrivals", href: "/shop" },
-                            { name: "Art Collections", href: "/shop" },
-                            { name: "About us", href: "/about" }
-                        ].map((item) => (
-                            <Link key={item.name} href={item.href} className={`${isLight ? 'text-gray-600 hover:text-black' : 'text-white/90 hover:text-white'} text-sm font-medium transition-colors`}>
+                    {/* Desktop Nav - Centered */}
+                    <div className="hidden lg:flex space-x-8 xl:space-x-12 absolute left-1/2 transform -translate-x-1/2">
+                        {navLinks.map((item) => (
+                            <Link
+                                key={item.name}
+                                href={item.href}
+                                className="text-gray-900 font-medium text-xs tracking-wide hover:text-gray-600 transition-colors whitespace-nowrap"
+                            >
                                 {item.name}
                             </Link>
                         ))}
-                        {isAdmin && (
-                            <Link href="/admin" className={`${isLight ? 'text-gray-600 hover:text-black' : 'text-white/90 hover:text-white'} text-sm font-medium transition-colors font-bold`}>
-                                Admin Panel
-                            </Link>
-                        )}
                     </div>
 
-                    {/* Icons */}
-                    <div className="hidden md:flex items-center space-x-6">
-                        <div className="relative group">
-                            <Search className={`h-5 w-5 cursor-pointer hover:opacity-70 transition-opacity`} />
-                        </div>
-                        <Link href="/wishlist" className="relative group">
-                            <Heart className={`h-5 w-5 cursor-pointer hover:opacity-70 transition-opacity`} />
-                            {wishlist.length > 0 && (
-                                <span className={`absolute -top-2 -right-2 ${badgeColor} text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full`}>
-                                    {wishlist.length}
-                                </span>
-                            )}
-                        </Link>
-                        <Link href="/cart" className="relative group">
-                            <ShoppingBag className={`h-5 w-5 cursor-pointer hover:opacity-70 transition-opacity`} />
+                    {/* Right Section */}
+                    <div className="hidden md:flex items-center space-x-8">
+                        {/* Search Bar */}
+                        <form onSubmit={handleSearch} className="flex items-center space-x-3 text-gray-400 border-r border-transparent pr-4 group transition-all">
+                            <button type="submit" className="hover:text-black transition-colors">
+                                <Search className="w-5 h-5" />
+                            </button>
+                            <input
+                                type="text"
+                                placeholder="Search for products..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="bg-transparent border-none focus:outline-none font-light text-sm w-32 xl:w-48 placeholder-gray-400 text-black py-1"
+                            />
+                        </form>
+
+                        {/* Cart Icon */}
+                        <Link href="/cart" className="relative group text-black hover:opacity-70 transition-opacity">
+                            <ShoppingBag className="w-6 h-6" />
                             {cart.length > 0 && (
-                                <span className={`absolute -top-2 -right-2 ${badgeColor} text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full`}>
+                                <span className="absolute -top-1 -right-1 bg-black text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
                                     {cart.length}
                                 </span>
                             )}
                         </Link>
-                        <Link href="/account" className="relative group">
-                            <User className={`h-5 w-5 cursor-pointer hover:opacity-70 transition-opacity`} />
+
+                        {/* User Icon */}
+                        <Link href="/account" className="text-black hover:opacity-70 transition-opacity">
+                            <User className="w-6 h-6" />
                         </Link>
                     </div>
 
                     {/* Mobile menu button */}
-                    <div className="md:hidden flex items-center">
+                    <div className="lg:hidden flex items-center space-x-6">
+                        <Link href="/cart" className="relative group text-black">
+                            <ShoppingBag className="w-6 h-6" />
+                            {cart.length > 0 && (
+                                <span className="absolute -top-1 -right-1 bg-black text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                                    {cart.length}
+                                </span>
+                            )}
+                        </Link>
                         <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className={`${textColor} hover:opacity-70 focus:outline-none`}
+                            className="text-black hover:opacity-70 focus:outline-none"
                         >
                             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                         </button>
                     </div>
                 </div>
-            </div>
 
-            {/* Mobile Menu */}
-            {isOpen && (
-                <div className={`md:hidden ${isLight ? 'bg-white text-black' : 'bg-black/95 text-white'} backdrop-blur-sm border-t ${borderColor}`}>
-                    <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                        {[
-                            { label: "All Products", href: "/shop" },
-                            { label: "On Sale", href: "/shop" },
-                            { label: "New Arrivals", href: "/shop" },
-                            { label: "Art Collections", href: "/shop" },
-                            { label: "About us", href: "/about" }
-                        ].map((item) => (
-                            <Link
-                                key={item.label}
-                                href={item.href}
-                                className={`block px-3 py-2 rounded-md text-base font-medium hover:opacity-70 transition-opacity`}
-                            >
-                                {item.label}
-                            </Link>
-                        ))}
+                {/* Mobile Menu */}
+                {isOpen && (
+                    <div className="lg:hidden border-t border-gray-100 bg-white absolute top-full left-0 w-full z-50 rounded-b-lg shadow-lg">
+                        <div className="px-6 py-6 space-y-4">
+                            {navLinks.map((item) => (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    onClick={() => setIsOpen(false)}
+                                    className="block text-lg font-medium text-gray-900 hover:text-gray-600"
+                                >
+                                    {item.name}
+                                </Link>
+                            ))}
+                            <div className="pt-4 border-t border-gray-100">
+                                <form onSubmit={(e) => { handleSearch(e); setIsOpen(false); }} className="relative mb-6">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        placeholder="Search for products..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:ring-1 focus:ring-black/5 text-sm"
+                                    />
+                                </form>
+                                <Link href="/account" onClick={() => setIsOpen(false)} className="flex items-center space-x-3 text-gray-900 font-medium">
+                                    <User className="w-5 h-5" />
+                                    <span>Account</span>
+                                </Link>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            )}
-        </nav>
+                )}
+            </nav>
+        </div>
     );
 }
