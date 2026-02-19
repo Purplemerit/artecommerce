@@ -11,13 +11,18 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String
+  password      String?
+  role          Role      @default(USER)
+  isVerified    Boolean   @default(false) @map("is_verified")
+  otp           String?
+  otpExpires    DateTime? @map("otp_expires")
+  googleId      String?   @unique @map("google_id")
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   orders    Order[]
   cart      CartItem[]

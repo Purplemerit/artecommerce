@@ -22,8 +22,9 @@ interface AuthContextType {
     isAuthenticated: boolean;
     isAdmin: boolean;
     isLoading: boolean;
-    login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-    signup: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
+    login: (email: string, password: string) => Promise<{ success: boolean; userId?: string; error?: string }>;
+    signup: (email: string, password: string, name: string) => Promise<{ success: boolean; userId?: string; error?: string }>;
+    verifyOtp: (userId: string, otp: string) => Promise<{ success: boolean; error?: string }>;
     logout: () => void;
     updateProfile: (data: Partial<User>) => Promise<boolean>;
 }
@@ -57,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         checkSession();
     }, []);
 
-    const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+    const login = async (email: string, password: string): Promise<{ success: boolean; userId?: string; error?: string }> => {
         try {
             const response = await fetch('/api/auth/login', {
                 method: 'POST',
@@ -65,13 +66,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 body: JSON.stringify({ email, password }),
             });
 
+            const data = await response.json();
             if (response.ok) {
-                const data = await response.json();
                 setUser(data.user);
                 return { success: true };
             } else {
-                const errorData = await response.json().catch(() => ({}));
-                return { success: false, error: errorData.error || "Invalid credentials" };
+                return { success: false, userId: data.userId, error: data.error || "Invalid credentials" };
             }
         } catch (error) {
             console.error("Login Error:", error);
@@ -79,33 +79,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const signup = async (email: string, password: string, name: string): Promise<{ success: boolean; error?: string }> => {
+    const signup = async (email: string, password: string, name: string): Promise<{ success: boolean; userId?: string; error?: string }> => {
         try {
-            // Try API first
             const response = await fetch('/api/auth/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password, name }),
             });
 
+            const data = await response.json();
             if (response.ok) {
-                return { success: true };
+                return { success: true, userId: data.userId };
+            } else {
+                return { success: false, error: data.error || "Signup failed" };
             }
         } catch (error) {
-            console.log("API not available, using localStorage fallback");
+            console.error("Signup Error:", error);
+            return { success: false, error: "Connection error. Please try again." };
         }
+    };
 
-        // Fallback to localStorage
-        const isAdmin = email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-        const newUser: User = {
-            id: Math.random().toString(36).substr(2, 9),
-            name,
-            email,
-            role: isAdmin ? "ADMIN" : "USER"
-        };
-        setUser(newUser);
-        localStorage.setItem("user", JSON.stringify(newUser));
-        return { success: true };
+    const verifyOtp = async (userId: string, otp: string): Promise<{ success: boolean; error?: string }> => {
+        try {
+            const response = await fetch('/api/auth/verify-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, otp }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                setUser(data.user);
+                return { success: true };
+            } else {
+                return { success: false, error: data.error || "Verification failed" };
+            }
+        } catch (error) {
+            console.error("OTP Verification Error:", error);
+            return { success: false, error: "Connection error. Please try again." };
+        }
     };
 
     const logout = async () => {
@@ -146,6 +158,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             user,
             login: async (e, p) => await login(e, p),
             signup: async (e, p, n) => await signup(e, p, n),
+            verifyOtp: async (u, o) => await verifyOtp(u, o),
             logout,
             updateProfile,
             isAuthenticated: !!user,
