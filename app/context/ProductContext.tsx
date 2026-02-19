@@ -65,6 +65,10 @@ export function ProductProvider({ children }: { children: ReactNode }) {
                         setProducts(initialProducts);
                     }
                 }
+            } else {
+                // If API returns 500 or other error, fallback to local data
+                console.warn("API error, using local fallback data");
+                setProducts(initialProducts);
             }
         } catch (error) {
             console.error("Failed to fetch products:", error);
