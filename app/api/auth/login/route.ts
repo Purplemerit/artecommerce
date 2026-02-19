@@ -32,11 +32,26 @@ export async function POST(request: NextRequest) {
         }
 
         // Verify password
+        if (!user.password) {
+            return NextResponse.json(
+                { error: 'Please login with Google for this account' },
+                { status: 400 }
+            );
+        }
+
         const isValidPassword = await bcrypt.compare(password, user.password);
 
         if (!isValidPassword) {
             return NextResponse.json(
                 { error: 'Invalid credentials' },
+                { status: 401 }
+            );
+        }
+
+        // Check if verified
+        if (!user.isVerified) {
+            return NextResponse.json(
+                { error: 'Please verify your email', userId: user.id, unverified: true },
                 { status: 401 }
             );
         }

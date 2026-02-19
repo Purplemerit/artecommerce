@@ -27,6 +27,8 @@ export default function LoginPage() {
 
         if (result.success) {
             router.push("/");
+        } else if (result.error === 'Please verify your email' && result.userId) {
+            router.push(`/verify-otp?userId=${result.userId}`);
         } else {
             setError(result.error || "Login failed. Please try again.");
         }
@@ -152,6 +154,7 @@ export default function LoginPage() {
                     <div className="mt-6 space-y-3">
                         <button
                             type="button"
+                            onClick={() => window.location.href = "/api/auth/google"}
                             className="w-full flex items-center justify-center px-4 py-3 border border-gray-200 rounded-full bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                         >
                             <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
