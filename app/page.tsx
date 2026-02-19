@@ -1,15 +1,19 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { ArrowRight, User, Settings, Layout, Users, ShieldCheck, Database, Star, ChevronRight } from "lucide-react";
-
-// Using Unsplash IDs that closely match the design aesthetic - NOW PULLED FROM DATA/PRODUCTS.TS
-import { products, getProductImage } from "./data/products";
+import { useProducts } from "./context/ProductContext";
+import { getProductImage } from "./data/products";
 
 export default function Home() {
+  const { products } = useProducts();
+
+  // Dynamically slice from the live database products
   const collectedByMany = products.slice(0, 3);
-  const shopCollection = products.slice(3, 12); // items 4-12 (up to 9 items for 3 rows)
+  const shopCollection = products.slice(3, 12);
 
   return (
     <main className="min-h-screen bg-[#FDFCF8] text-[#1a1a1a]">
