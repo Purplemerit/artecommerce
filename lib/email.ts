@@ -4,9 +4,14 @@ import { Resend } from 'resend';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendOtpEmail(email: string, otp: string) {
+    // DEV LOG: So you can always see the OTP in your terminal even if email fails
+    if (process.env.NODE_ENV !== 'production') {
+        console.log(`\n🚀 [DEV] OTP for ${email}: ${otp}\n`);
+    }
+
     try {
         const { data, error } = await resend.emails.send({
-            from: 'Art Ecommerce <onboarding@resend.dev>',
+            from: 'Art Ecommerce <onboarding@purplemerit.com>',
             to: [email],
             subject: 'Verify your email - Art Ecommerce',
             html: `

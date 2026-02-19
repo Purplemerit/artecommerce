@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
 
         // Generate JWT
         const token = await new SignJWT({
-            id: user.id,
+            userId: user.id,
             email: user.email,
             role: user.role,
         })
