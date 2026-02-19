@@ -55,6 +55,9 @@ export async function GET(request: NextRequest) {
             total: order.total,
             status: order.status,
             paymentStatus: order.paymentStatus,
+            shipmentStatus: order.shipmentStatus,
+            razorpayOrderId: order.razorpayOrderId,
+            razorpayPaymentId: order.razorpayPaymentId,
             date: order.createdAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
             customerName: order.user.name,
             customerEmail: order.user.email,
@@ -89,9 +92,11 @@ export async function POST(request: NextRequest) {
                 data: {
                     userId: user.userId as string,
                     total: data.total,
+                    status: data.razorpayPaymentId ? 'PAID' : 'PENDING',
+                    paymentStatus: data.razorpayPaymentId ? 'PAID' : (data.paymentStatus || 'PENDING'),
+                    razorpayOrderId: data.razorpayOrderId,
+                    razorpayPaymentId: data.razorpayPaymentId,
                     shippingAddress: data.shippingAddress,
-                    status: 'PENDING',
-                    paymentStatus: data.paymentStatus || 'PENDING',
                     items: {
                         create: data.items.map((item: any) => ({
                             productId: item.productId,
@@ -110,7 +115,24 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({ success: true, order });
     } catch (error: any) {
-        console.error('Create order error:', error);
-        return NextResponse.json({ error: 'Failed to create order' }, { status: 500 });
+        console.error('Create order error details:', {
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+            meta: error.meta
+        });
+
+        // Check for specific Prisma errors
+        if (error.code === 'P2003') {
+            return NextResponse.json({
+                error: 'Required record not found (User or Product). Please ensure you are logged in correctly and products exist in the database.',
+                details: error.meta
+            }, { status: 400 });
+        }
+
+        return NextResponse.json({
+            error: error.message || 'Failed to create order',
+            details: error.code
+        }, { status: 500 });
     }
 }

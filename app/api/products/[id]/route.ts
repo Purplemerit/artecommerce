@@ -78,13 +78,13 @@ export async function PUT(
             data: {
                 name: data.name,
                 description: data.description,
-                price: data.price ? parseFloat(data.price) : undefined,
-                oldPrice: data.oldPrice ? parseFloat(data.oldPrice) : null,
+                price: data.price ? parseFloat(String(data.price)) : undefined,
+                oldPrice: data.oldPrice ? parseFloat(String(data.oldPrice)) : null,
                 images: data.images,
                 category: data.category,
-                type: data.type,
-                quantity: data.quantity ? parseInt(data.quantity) : undefined,
-                sku: data.sku,
+                type: data.type ? ((data.type.toUpperCase() === 'DIGITAL') ? 'DIGITAL' : 'PHYSICAL') : undefined,
+                quantity: data.quantity ? parseInt(String(data.quantity)) : undefined,
+                sku: data.sku && data.sku.trim() !== '' ? data.sku.trim() : null,
             },
         });
 

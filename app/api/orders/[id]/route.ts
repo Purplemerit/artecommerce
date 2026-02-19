@@ -35,6 +35,7 @@ export async function PATCH(
             data: {
                 status: data.status,
                 paymentStatus: data.paymentStatus,
+                shipmentStatus: data.shipmentStatus,
             }
         });
 

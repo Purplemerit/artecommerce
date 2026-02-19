@@ -67,13 +67,13 @@ export async function POST(request: NextRequest) {
             data: {
                 name: data.name,
                 description: data.description,
-                price: parseFloat(data.price),
-                oldPrice: data.oldPrice ? parseFloat(data.oldPrice) : null,
+                price: parseFloat(String(data.price || 0)),
+                oldPrice: data.oldPrice ? parseFloat(String(data.oldPrice)) : null,
                 images: data.images || [],
                 category: data.category,
-                type: data.type || 'PHYSICAL',
-                quantity: parseInt(data.quantity) || 0,
-                sku: data.sku,
+                type: (data.type?.toUpperCase() === 'DIGITAL') ? 'DIGITAL' : 'PHYSICAL',
+                quantity: parseInt(String(data.quantity || 0)) || 0,
+                sku: data.sku && data.sku.trim() !== '' ? data.sku.trim() : null,
             },
         });
 

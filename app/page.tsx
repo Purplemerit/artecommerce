@@ -2,14 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import { ArrowRight, User, Settings, Layout, Users, ShieldCheck, Database } from "lucide-react";
+import { ArrowRight, User, Settings, Layout, Users, ShieldCheck, Database, Star, ChevronRight } from "lucide-react";
 
 // Using Unsplash IDs that closely match the design aesthetic - NOW PULLED FROM DATA/PRODUCTS.TS
 import { products, getProductImage } from "./data/products";
 
 export default function Home() {
   const collectedByMany = products.slice(0, 3);
-  const shopCollection = products.slice(3, 9); // items 4-9
+  const shopCollection = products.slice(3, 12); // items 4-12 (up to 9 items for 3 rows)
 
   return (
     <main className="min-h-screen bg-[#FDFCF8] text-[#1a1a1a]">
@@ -18,25 +18,25 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative h-screen w-full overflow-hidden">
         <Image
-          src={getProductImage("/images/unsplash_nimElTcTNyY.png")} // Fresco style replacement
+          src="/images/heropage.jpg" // Local image from public folder
           alt="Classic Art Ceiling"
           fill
           className="object-cover"
           priority
         />
-        {/* Overlay gradient for text readability */}
-        <div className="absolute inset-0 bg-black/20" />
+        {/* Overlay gradient for text readability - slightly darker to ensure text pops without shadow */}
+        <div className="absolute inset-0 bg-black/30" />
 
         <div className="relative h-full flex flex-col items-center justify-center text-center px-4 z-10 pt-20">
-          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-white mb-6 leading-[1.1] tracking-tight drop-shadow-lg">
+          <h1 className="font-serif font-semibold text-[50px] md:text-[96px] text-white mb-6 leading-[1.2] md:leading-[120px] tracking-[2px] md:tracking-[4.8px] max-w-[1200px]">
             Art that lives with you
           </h1>
-          <p className="font-sans text-white/90 text-sm md:text-base max-w-lg mb-12 tracking-wide font-light drop-shadow-md">
+          <p className="font-sans text-white font-light text-lg md:text-[24px] leading-relaxed md:leading-[39px] tracking-normal mb-12 max-w-[1000px]">
             Curated artworks created to be seen, felt, and lived with — not just displayed.
           </p>
           <Link href="/shop">
-            <button className="bg-white text-black px-10 py-4 text-xs font-bold tracking-[0.2em] transform hover:translate-y-[-2px] transition-transform uppercase shadow-xl hover:bg-gray-100">
-              Explore the Collection
+            <button className="w-[258px] h-[56px] bg-[#F3F0EA] border-2 border-white text-black text-xs font-bold tracking-[0.2em] uppercase flex items-center justify-center transform hover:translate-y-[-2px] transition-all hover:bg-white hover:border-transparent">
+              EXPLORE THE COLLECTION
             </button>
           </Link>
         </div>
@@ -44,64 +44,75 @@ export default function Home() {
 
       {/* Collected By Many Section */}
       <section className="py-24 px-6 max-w-[1400px] mx-auto">
-        <div className="flex justify-between items-baseline mb-16 border-b border-gray-200 pb-4">
-          <h2 className="font-serif text-4xl md:text-5xl text-[#1a1a1a]">Collected by many</h2>
-          <Link href="/shop" className="text-sm border-b border-black pb-1 hover:text-gray-600 transition-colors">
+        <div className="relative flex flex-col md:flex-row items-center justify-center mb-16">
+          <h2 className="font-serif font-normal text-[32px] md:text-[48px] leading-tight md:leading-[60px] text-[#2A2A2A] text-center">
+            Collected by many
+          </h2>
+          <Link href="/shop" className="hidden md:block absolute right-0 font-serif font-normal text-[18px] leading-[21.6px] tracking-normal underline decoration-1 underline-offset-4 text-[#2A2A2A] hover:text-gray-600 transition-colors">
+            View all Art
+          </Link>
+          {/* Mobile only link */}
+          <Link href="/shop" className="md:hidden mt-4 font-serif font-normal text-[18px] leading-[21.6px] tracking-normal underline decoration-1 underline-offset-4 text-[#2A2A2A] hover:text-gray-600 transition-colors">
             View all Art
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 gap-y-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {collectedByMany.map((product) => (
-            <Link href={`/product/${product.id}`} key={product.id} className="group block">
-              <div className="relative aspect-square overflow-hidden mb-6 bg-[#f4f4f5]">
+            <Link key={product.id} href={`/product/${product.id}`} className="group block">
+              <div className="relative w-full h-[370px] overflow-hidden bg-gray-100">
                 <Image
                   src={getProductImage(product.images[0])}
                   alt={product.name}
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
-              <div className="flex flex-col space-y-1">
-                <h3 className="font-serif text-xl text-[#1a1a1a] group-hover:underline decoration-1 underline-offset-4">{product.name}</h3>
-                <p className="text-sm text-gray-500 font-medium">$ {product.price.toFixed(2)} USD</p>
-              </div>
+              <h3 className="mt-4 font-serif font-normal text-[20px] leading-[24px] text-[#2A2A2A]">
+                {product.name}
+              </h3>
+              <p className="mt-1 font-sans font-normal text-[18px] leading-[21.6px] text-[#2A2A2A]">
+                $ {product.price.toFixed(2)} USD
+              </p>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* Quote Section */}
-      <section className="bg-[#f2f0ea] py-32 px-4 text-center">
-        <div className="max-w-4xl mx-auto">
-          <p className="font-serif text-3xl md:text-5xl text-[#1a1a1a] leading-tight mb-10">
-            A sense of intimacy, togetherness, an inner warmth, a world lit by <span className="italic">art</span> and snuggled under blankets. Bring an enchanting scent to the home.
-          </p>
-          <Link href="/shop" className="text-[#1a1a1a] border-b border-black pb-1 hover:text-gray-600 transition-colors uppercase text-xs tracking-widest font-bold">
-            Shop Now
-          </Link>
-        </div>
+      {/* Intimacy/Promotion Section */}
+      <section className="w-full bg-[#EBEBEC] h-[393px] flex flex-col items-center justify-center px-4">
+        <p className="font-serif font-normal text-[24px] md:text-[36px] leading-relaxed md:leading-[48px] text-center text-[#2A2A2A] max-w-[626px] mb-8">
+          A sense of intimacy, togetherness, an inner warmth, a world lit by candles and snuggled under blankets. Bring an enchanting scent to the home.
+        </p>
+        <Link href="/shop" className="font-serif font-normal text-[24px] leading-[21.6px] underline decoration-1 underline-offset-4 text-[#2A2A2A] hover:text-gray-600 transition-colors">
+          Shop Now
+        </Link>
       </section>
 
-      {/* Shop Our Collection Grid */}
+      {/* Shop Our Collection Section */}
       <section className="py-24 px-6 max-w-[1400px] mx-auto">
-        <h2 className="font-serif text-4xl md:text-5xl text-center text-[#1a1a1a] mb-20">Shop Our Collection</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+        <h2 className="font-serif font-normal text-[32px] md:text-[48px] leading-tight md:leading-[60px] text-[#2A2A2A] text-center mb-16">
+          Shop Our Collection
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
           {shopCollection.map((product) => (
-            <Link href={`/product/${product.id}`} key={product.id} className="group block">
-              <div className="relative aspect-[4/3] overflow-hidden mb-6 bg-[#f4f4f5]">
+            <Link key={product.id} href={`/product/${product.id}`} className="group block h-[454px] flex flex-col">
+              <div className="relative w-full flex-1 overflow-hidden bg-gray-100">
                 <Image
                   src={getProductImage(product.images[0])}
                   alt={product.name}
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-serif text-xl mb-1 group-hover:underline decoration-1 underline-offset-4">{product.name}</h3>
-                  <p className="text-sm text-gray-500">$ {product.price.toFixed(2)} USD</p>
-                </div>
+              <div className="mt-4">
+                <h3 className="font-serif font-normal text-[20px] leading-[24px] text-[#2A2A2A]">
+                  {product.name}
+                </h3>
+                <p className="mt-1 font-sans font-normal text-[18px] leading-[21.6px] text-[#2A2A2A]">
+                  $ {product.price.toFixed(2)} USD
+                </p>
               </div>
             </Link>
           ))}
@@ -109,68 +120,74 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 px-6 max-w-[1400px] mx-auto bg-[#faf9f6]">
-        <h2 className="font-serif text-4xl md:text-5xl text-center text-[#1a1a1a] mb-20 leading-tight border-b border-gray-200 pb-10">
-          We focus on providing the best platform for<br /> artists to share and grow.
-        </h2>
+      <section className="py-24 px-6 max-w-[1400px] mx-auto bg-[#FDFCF8]">
+        <div className="max-w-[960px] mx-auto text-center mb-16">
+          <h2 className="font-serif font-medium text-[32px] md:text-[48px] leading-none text-[#2A2A2A]">
+            We focus on providing the best platform for artists to share and grow.
+          </h2>
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-          <div className="space-y-4">
+        <div className="flex flex-col lg:flex-row justify-center items-center gap-10 xl:gap-20">
+          {/* Left Column - Features */}
+          <div className="flex flex-col justify-between h-[773px]">
             {/* Feature 1 */}
-            <div className="bg-white p-8 shadow-sm hover:shadow-md transition-shadow flex items-start space-x-6">
-              <div className="p-3 bg-gray-50 rounded-full flex-shrink-0">
-                <Users className="h-6 w-6 text-black" />
+            <div className="w-[420px] h-[160px] bg-white border border-[#2A2A2A] flex flex-col justify-center px-10 hover:shadow-lg transition-shadow">
+              <div className="flex items-center gap-4 mb-3">
+                <div className="relative w-[42px] h-[42px] shrink-0">
+                  <Image src="/images/Frame 2121453497.svg" alt="Icon" fill className="object-contain" />
+                </div>
+                <h3 className="font-serif font-semibold text-[24px] leading-none text-black">User-Friendly Interface</h3>
               </div>
-              <div>
-                <h3 className="font-serif font-bold text-lg mb-2">User Friendly Interface</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">
-                  Navigating the platform is smooth and intuitive, allowing artists to focus on what matters most.
-                </p>
-              </div>
-            </div>
-            {/* Feature 2 */}
-            <div className="bg-white p-8 shadow-sm hover:shadow-md transition-shadow flex items-start space-x-6">
-              <div className="p-3 bg-gray-50 rounded-full flex-shrink-0">
-                <ShieldCheck className="h-6 w-6 text-black" />
-              </div>
-              <div>
-                <h3 className="font-serif font-bold text-lg mb-2">High Security</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">
-                  We verify all users and transactions to ensure a safe environment for everyone.
-                </p>
-              </div>
-            </div>
-            {/* Feature 3 */}
-            <div className="bg-white p-8 shadow-sm hover:shadow-md transition-shadow flex items-start space-x-6">
-              <div className="p-3 bg-gray-50 rounded-full flex-shrink-0">
-                <Database className="h-6 w-6 text-black" />
-              </div>
-              <div>
-                <h3 className="font-serif font-bold text-lg mb-2">Secure Data</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">
-                  Your data is encrypted and stored securely, giving you peace of mind.
-                </p>
-              </div>
-            </div>
-            {/* Feature 4 */}
-            <div className="bg-white p-8 shadow-sm hover:shadow-md transition-shadow flex items-start space-x-6">
-              <div className="p-3 bg-gray-50 rounded-full flex-shrink-0">
-                <Layout className="h-6 w-6 text-black" />
-              </div>
-              <div>
-                <h3 className="font-serif font-bold text-lg mb-2">Intuitive Design</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">
-                  Designed with the user in mind, making it easy to manage your collection.
-                </p>
-              </div>
+              <p className="font-sans font-medium text-[13px] tracking-wide text-black leading-tight">
+                Intuitive design that makes navigation seamless for all users, regardless of tech-savviness.
+              </p>
             </div>
 
+            {/* Feature 2 */}
+            <div className="w-[420px] h-[160px] bg-white border border-[#2A2A2A] flex flex-col justify-center px-10 hover:shadow-lg transition-shadow">
+              <div className="flex items-center gap-4 mb-3">
+                <div className="relative w-[42px] h-[42px] shrink-0">
+                  <Image src="/images/Frame 2121453498.svg" alt="Icon" fill className="object-contain" />
+                </div>
+                <h3 className="font-serif font-semibold text-[24px] leading-none text-black">High Customizability</h3>
+              </div>
+              <p className="font-sans font-medium text-[13px] tracking-wide text-black leading-tight">
+                Allows users to tailor their experience with various settings and personalization options.
+              </p>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="w-[420px] h-[160px] bg-white border border-[#2A2A2A] flex flex-col justify-center px-10 hover:shadow-lg transition-shadow">
+              <div className="flex items-center gap-4 mb-3">
+                <div className="relative w-[42px] h-[42px] shrink-0">
+                  <Image src="/images/Frame 2121453499.svg" alt="Icon" fill className="object-contain" />
+                </div>
+                <h3 className="font-serif font-semibold text-[24px] leading-none text-black">Responsive Design</h3>
+              </div>
+              <p className="font-sans font-medium text-[13px] tracking-wide text-black leading-tight">
+                Optimized for both desktop and mobile, providing a consistent experience across all devices.
+              </p>
+            </div>
+
+            {/* Feature 4 */}
+            <div className="w-[420px] h-[160px] bg-white border border-[#2A2A2A] flex flex-col justify-center px-10 hover:shadow-lg transition-shadow">
+              <div className="flex items-center gap-4 mb-3">
+                <div className="relative w-[42px] h-[42px] shrink-0">
+                  <Image src="/images/Frame 2121453084.svg" alt="Icon" fill className="object-contain" />
+                </div>
+                <h3 className="font-serif font-semibold text-[24px] leading-none text-black">Integrated Community</h3>
+              </div>
+              <p className="font-sans font-medium text-[13px] tracking-wide text-black leading-tight">
+                Foster connections and growth within a vibrant community of like-minded artists.
+              </p>
+            </div>
           </div>
 
-          <div className="relative h-[650px] w-full sticky top-10">
+          {/* Right Column - Large Image */}
+          <div className="w-full lg:w-[653px] h-[500px] lg:h-[773px] relative bg-gray-100">
             <Image
-              src="/images/unsplash_MO5qO9xpZhA (1).png" // Mountain Landscape replacement
-              alt="Landscape Painting"
+              src="/images/Frame 2121453297.svg"
+              alt="Platform Features"
               fill
               className="object-cover"
             />
@@ -179,120 +196,168 @@ export default function Home() {
       </section>
 
       {/* Testimonial Section */}
-      <section className="bg-black text-white relative">
-        <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[600px]">
-          {/* Text Content */}
-          <div className="p-16 lg:p-24 flex flex-col justify-center relative bg-[url('/images/unsplash_nimElTcTNyY (1).png')] bg-cover bg-blend-overlay bg-black/70">
-            <h2 className="font-serif text-4xl md:text-5xl mb-12 leading-tight">
+      <section className="relative w-full h-[700px] bg-[#2A2A2A]">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <Image
+            src="/images/415f55ad013de90965507e42d553bf48dd2f48e3.jpg"
+            alt="Gallery Background"
+            fill
+            className="object-cover opacity-80"
+            priority
+          />
+        </div>
+
+        {/* Overlay Content */}
+        <div className="absolute inset-0 bg-black/20" />
+
+        <div className="relative h-full max-w-[1440px] mx-auto flex items-center px-6">
+          {/* Left Text Content */}
+          <div className="w-full lg:w-1/2 lg:pl-32 z-10">
+            <h2 className="font-serif font-normal text-[50px] leading-[60px] text-white mb-6 max-w-[456px]">
               Our customers talk about their experiences.
             </h2>
-            <div className="flex space-x-1 mb-8">
-              {[1, 2, 3, 4, 5].map(i => <span key={i} className="text-[#d4a373] text-2xl">★</span>)}
+
+            {/* Stars */}
+            <div className="flex gap-2 mb-8">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star key={star} className="w-5 h-5 fill-white text-white" />
+              ))}
             </div>
-            <p className="text-gray-300 mb-10 font-sans font-light text-xl leading-relaxed italic">
-              &quot;The quality of the art pieces I received was absolutely astounding. They bring such a unique warmth to my living space.&quot;
+
+            <p className="font-sans font-normal text-[24px] leading-tight text-white mb-8 max-w-[549px]">
+              “Candle N' Calm candles make great gifts for any occasion, so encourage customers to share how they gifted their candle and how it was received.”
             </p>
-            <div className="mt-auto">
-              <p className="font-serif text-2xl">Ram Curren</p>
-              <p className="text-sm text-gray-400 uppercase tracking-wider mt-1">Art Collector</p>
-            </div>
+
+            <p className="font-serif text-[32px] text-white">
+              Ram Curren
+            </p>
           </div>
 
-          {/* Image */}
-          <div className="relative h-[500px] lg:h-auto min-h-[500px]">
-            <Image
-              src="/images/unsplash_nimElTcTNyY (2).png"
-              alt="Customer"
-              fill
-              className="object-cover"
-            />
+          {/* Right Person Image */}
+          <div className="hidden lg:block absolute right-32 top-1/2 -translate-y-1/2 w-[500px] h-[600px]">
+            <div className="relative w-full h-full">
+              <Image
+                src="/images/Background.svg"
+                alt="Ram Curren"
+                fill
+                className="object-cover shadow-2xl"
+              />
+            </div>
           </div>
         </div>
       </section>
 
       {/* Latest Stories Section */}
       <section className="py-32 px-6 max-w-[1400px] mx-auto">
-        <div className="flex flex-col lg:flex-row gap-16">
-          <div className="lg:w-1/3 flex flex-col justify-between sticky top-32 h-fit">
-            <div>
-              <h2 className="font-serif text-5xl md:text-6xl text-[#1a1a1a] mb-8 leading-[1.1]">Latest from<br /> our stories</h2>
-              <p className="text-gray-500 mb-10 text-lg">Dive into the world of art, inspiration, and creativity.</p>
-            </div>
-            <Link href="/shop">
-              <button className="border border-black px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-colors">
-                View all articles
-              </button>
+        <div className="flex flex-col lg:flex-row gap-20 items-start">
+          {/* Sticky Left Column */}
+          <div className="w-full lg:w-1/3 sticky top-32 h-fit flex flex-col items-start gap-10">
+            <h2 className="font-serif font-normal text-[50px] leading-[60px] text-[#2A2A2A]">
+              Latest from our stories
+            </h2>
+            <Link
+              href="/blog"
+              className="font-sans text-[16px] font-normal text-[#2A2A2A] border border-[#2A2A2A] px-[20px] py-[13px] hover:bg-[#2A2A2A] hover:text-white transition-colors"
+            >
+              View all articles
             </Link>
           </div>
-          <div className="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-8">
+
+          {/* Right Column - Grid */}
+          <div className="w-full lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-16">
             {/* Story 1 */}
-            <div className="space-y-4 group cursor-pointer">
-              <div className="relative aspect-[4/5] bg-gray-100 overflow-hidden">
+            <Link href="/blog/perfect-painting-living-room" className="group cursor-pointer block">
+              <div className="relative aspect-[4/5] w-full overflow-hidden bg-gray-100">
                 <Image
-                  src={getProductImage(products[0].images[0])}
-                  alt="Story 1"
+                  src="/images/unsplash_nimElTcTNyY.png"
+                  alt="The Art of Selecting"
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
-              <h3 className="font-serif text-xl pt-2">The beauty of Texture</h3>
-            </div>
+              <h3 className="font-serif text-[24px] text-[#2A2A2A] mt-6 mb-2">The Art of Selecting Art</h3>
+              <p className="font-sans text-[15px] text-gray-500 mb-4 line-clamp-2">Discover how to choose artwork that complements your space and reflects your personality.</p>
+              <div className="text-black text-sm font-bold uppercase tracking-widest flex items-center gap-2 hover:gap-4 transition-all w-fit border-b border-transparent hover:border-black pb-1">
+                Read More <ChevronRight className="w-4 h-4" />
+              </div>
+            </Link>
+
             {/* Story 2 */}
-            <div className="space-y-4 group cursor-pointer mt-0 md:mt-16">
-              <div className="relative aspect-[4/5] bg-gray-100 overflow-hidden">
+            <Link href="/blog/modern-minimalist-art-guide" className="group cursor-pointer block">
+              <div className="relative aspect-[4/5] w-full overflow-hidden bg-gray-100">
                 <Image
-                  src={getProductImage(products[4].images[0])}
-                  alt="Story 2"
+                  src="/images/unsplash_nimElTcTNyY (1).png"
+                  alt="Modern Minimalist Art"
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
-              <h3 className="font-serif text-xl pt-2">Natural Landscapes</h3>
-            </div>
+              <h3 className="font-serif text-[24px] text-[#2A2A2A] mt-6 mb-2">Minimalist Art Guide</h3>
+              <p className="font-sans text-[15px] text-gray-500 mb-4 line-clamp-2">Everything you need to know about the growing trend of minimalist art and design.</p>
+              <div className="text-black text-sm font-bold uppercase tracking-widest flex items-center gap-2 hover:gap-4 transition-all w-fit border-b border-transparent hover:border-black pb-1">
+                Read More <ChevronRight className="w-4 h-4" />
+              </div>
+            </Link>
+
             {/* Story 3 */}
-            <div className="space-y-4 group cursor-pointer">
-              <div className="relative aspect-[4/5] bg-gray-100 overflow-hidden">
+            <Link href="/blog/sustainability-contemporary-art" className="group cursor-pointer block">
+              <div className="relative aspect-[4/5] w-full overflow-hidden bg-gray-100">
                 <Image
-                  src={getProductImage(products[6].images[0])}
-                  alt="Story 3"
+                  src="/images/unsplash_nimElTcTNyY (2).png"
+                  alt="Sustainability in Art"
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
-              <h3 className="font-serif text-xl pt-2">Botany in Art</h3>
-            </div>
+              <h3 className="font-serif text-[24px] text-[#2A2A2A] mt-6 mb-2">Sustainable Art</h3>
+              <p className="font-sans text-[15px] text-gray-500 mb-4 line-clamp-2">Exploring the intersection of creativity and environmental consciousness in art.</p>
+              <div className="text-black text-sm font-bold uppercase tracking-widest flex items-center gap-2 hover:gap-4 transition-all w-fit border-b border-transparent hover:border-black pb-1">
+                Read More <ChevronRight className="w-4 h-4" />
+              </div>
+            </Link>
+
             {/* Story 4 */}
-            <div className="space-y-4 group cursor-pointer mt-0 md:mt-16">
-              <div className="relative aspect-[4/5] bg-gray-100 overflow-hidden">
+            <Link href="/blog/top-emerging-artists-2024" className="group cursor-pointer block">
+              <div className="relative aspect-[4/5] w-full overflow-hidden bg-gray-100">
                 <Image
-                  src={getProductImage(products[1].images[0])}
-                  alt="Story 4"
+                  src="/images/unsplash_MO5qO9xpZhA.png"
+                  alt="Emerging Artists"
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
-              <h3 className="font-serif text-xl pt-2">Blue Hues</h3>
-            </div>
+              <h3 className="font-serif text-[24px] text-[#2A2A2A] mt-6 mb-2">Artists to Watch</h3>
+              <p className="font-sans text-[15px] text-gray-500 mb-4 line-clamp-2">Our curated selection of emerging talents who are redefining contemporary art.</p>
+              <div className="text-black text-sm font-bold uppercase tracking-widest flex items-center gap-2 hover:gap-4 transition-all w-fit border-b border-transparent hover:border-black pb-1">
+                Read More <ChevronRight className="w-4 h-4" />
+              </div>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Newsletter */}
-      <section className="py-24 px-4 bg-[#f2f0ea]">
-        <div className="max-w-3xl mx-auto bg-white p-12 md:p-20 text-center shadow-xl">
-          <h2 className="font-serif text-4xl mb-6">Find art that belongs with you</h2>
-          <p className="text-gray-500 mb-10 max-w-md mx-auto">
-            Carefully curated pieces designed to live naturally in your space
-          </p>
+      {/* CTA Section (Find art that belongs with you) */}
+      <section className="py-24 px-6 max-w-[1400px] mx-auto">
+        <div className="w-full max-w-[1282px] mx-auto h-[277px] bg-[#FDFCF8] border border-[#2A2A2A] flex flex-col justify-center items-center gap-8 px-4">
+          <div className="text-center space-y-3">
+            <h2 className="font-serif font-semibold text-[36px] leading-tight text-[#2A2A2A]">
+              Find art that belongs with you
+            </h2>
+            <p className="font-sans font-medium text-[20px] leading-tight text-[#6B6B6B] max-w-[460px] mx-auto">
+              Carefully curated pieces designed to live naturally in your space
+            </p>
+          </div>
+
           <Link href="/shop">
-            <button className="bg-white border border-black px-10 py-4 text-xs font-bold uppercase tracking-widest flex items-center justify-center mx-auto hover:bg-black hover:text-white transition-colors">
-              Explore the full collection <ArrowRight className="ml-2 h-4 w-4" />
+            <button className="w-full md:w-[382px] h-[56px] bg-white border border-[#2A2A2A] flex items-center justify-center gap-2 font-sans font-medium text-[16px] text-[#2A2A2A] hover:bg-[#2A2A2A] hover:text-white transition-colors">
+              Explore the full collection <ChevronRight className="w-4 h-4" />
             </button>
           </Link>
         </div>
       </section>
 
       <Footer />
-    </main>
+    </main >
   );
 }

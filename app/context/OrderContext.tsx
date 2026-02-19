@@ -1,13 +1,14 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { useAuth } from "./AuthContext";
 
 export interface Order {
     id: string;
     userId: string;
     items: any[];
     total: number;
-    status: "Pending" | "Paid" | "Shipped" | "Delivered" | "Cancelled";
+    status: "Pending" | "Paid" | "Shipped" | "Delivered" | "Cancelled" | "PAID" | "PENDING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
     shipmentStatus: "Processing" | "In Transit" | "Out for Delivery" | "Delivered";
     date: string;
     customerName: string;
@@ -21,6 +22,8 @@ export interface Order {
         zipCode: string;
         phone: string;
     };
+    razorpayOrderId?: string;
+    razorpayPaymentId?: string;
 }
 
 interface OrderContextType {
@@ -30,19 +33,27 @@ interface OrderContextType {
     updateOrderStatus: (id: string, status: Order["status"], shipmentStatus?: Order["shipmentStatus"]) => Promise<void>;
     getUserOrders: (userId: string) => Order[];
     getOrder: (id: string) => Order | undefined;
+    refreshOrders: () => Promise<void>;
 }
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined);
 
 export function OrderProvider({ children }: { children: ReactNode }) {
+    const { user, isAuthenticated } = useAuth();
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchOrders();
-    }, []);
+        if (isAuthenticated) {
+            fetchOrders();
+        } else {
+            setOrders([]);
+            setLoading(false);
+        }
+    }, [isAuthenticated, user?.id]);
 
     const fetchOrders = async () => {
+        setLoading(true);
         try {
             const response = await fetch('/api/orders');
             if (response.ok) {
@@ -69,7 +80,16 @@ export function OrderProvider({ children }: { children: ReactNode }) {
                 await fetchOrders();
                 return data.order;
             }
-            throw new Error("Failed to create order");
+
+            if (response.status === 401) {
+                // Session expired or invalid
+                localStorage.removeItem("user");
+                window.location.href = "/login?error=Session expired, please login again";
+                throw new Error("Session expired. Please login again.");
+            }
+
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || "Failed to create order");
         } catch (error) {
             console.error("Failed to create order:", error);
             throw error;
@@ -101,7 +121,15 @@ export function OrderProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <OrderContext.Provider value={{ orders, loading, createOrder, updateOrderStatus, getUserOrders, getOrder }}>
+        <OrderContext.Provider value={{
+            orders,
+            loading,
+            createOrder,
+            updateOrderStatus,
+            getUserOrders,
+            getOrder,
+            refreshOrders: fetchOrders
+        }}>
             {children}
         </OrderContext.Provider>
     );

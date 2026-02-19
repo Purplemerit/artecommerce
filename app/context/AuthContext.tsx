@@ -42,28 +42,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 if (response.ok) {
                     const data = await response.json();
                     setUser(data.user);
-                    localStorage.setItem("user", JSON.stringify(data.user));
                 } else {
-                    // Falls back to localStorage if API fails or session is invalid
-                    const storedUser = localStorage.getItem("user");
-                    if (storedUser) {
-                        try {
-                            setUser(JSON.parse(storedUser));
-                        } catch (e) {
-                            console.error("Error parsing stored user:", e);
-                        }
-                    }
+                    setUser(null);
+                    localStorage.removeItem("user");
                 }
             } catch (error) {
-                console.log("Session API not available, using localStorage fallback");
-                const storedUser = localStorage.getItem("user");
-                if (storedUser) {
-                    try {
-                        setUser(JSON.parse(storedUser));
-                    } catch (e) {
-                        console.error("Error parsing stored user:", e);
-                    }
-                }
+                console.error("Session check failed:", error);
+                setUser(null);
             } finally {
                 setLoading(false);
             }
@@ -74,7 +59,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
         try {
-            // Try API first
             const response = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -84,30 +68,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (response.ok) {
                 const data = await response.json();
                 setUser(data.user);
-                localStorage.setItem("user", JSON.stringify(data.user));
                 return { success: true };
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                return { success: false, error: errorData.error || "Invalid credentials" };
             }
         } catch (error) {
-            console.log("API not available, using localStorage fallback");
+            console.error("Login Error:", error);
+            return { success: false, error: "Connection error. Please try again." };
         }
-
-        // Fallback to localStorage authentication
-        const isAdmin = email === process.env.NEXT_PUBLIC_ADMIN_EMAIL &&
-            password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
-
-        if (isAdmin || email.includes('@')) {
-            const newUser: User = {
-                id: Math.random().toString(36).substr(2, 9),
-                name: isAdmin ? "Admin" : email.split('@')[0],
-                email,
-                role: isAdmin ? "ADMIN" : "USER"
-            };
-            setUser(newUser);
-            localStorage.setItem("user", JSON.stringify(newUser));
-            return { success: true };
-        }
-
-        return { success: false, error: "Invalid credentials" };
     };
 
     const signup = async (email: string, password: string, name: string): Promise<{ success: boolean; error?: string }> => {

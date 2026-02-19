@@ -17,6 +17,8 @@ export interface Product {
     category?: string;
     quantity?: number;
     sku?: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 interface ProductContextType {
@@ -46,13 +48,26 @@ export function ProductProvider({ children }: { children: ReactNode }) {
                 if (data.products && data.products.length > 0) {
                     setProducts(data.products);
                 } else {
-                    // Fallback to initialProducts if DB comes back empty
-                    setProducts(initialProducts);
+                    // DB is empty, trigger seed
+                    console.log("DB is empty, seeding initial products...");
+                    const seedResponse = await fetch('/api/seed', { method: 'POST' });
+                    if (seedResponse.ok) {
+                        const seedData = await seedResponse.json();
+                        console.log("Seed successful:", seedData.message);
+                        // Refresh products after seed
+                        const freshResponse = await fetch('/api/products');
+                        if (freshResponse.ok) {
+                            const freshData = await freshResponse.json();
+                            setProducts(freshData.products);
+                        }
+                    } else {
+                        // If seeding fails, fallback to local data
+                        setProducts(initialProducts);
+                    }
                 }
             }
         } catch (error) {
             console.error("Failed to fetch products:", error);
-            // Fallback to initialProducts on error
             setProducts(initialProducts);
         } finally {
             setLoading(false);
@@ -68,9 +83,11 @@ export function ProductProvider({ children }: { children: ReactNode }) {
             });
             if (response.ok) {
                 await fetchProducts();
+                return await response.json();
             }
         } catch (error) {
             console.error("Failed to add product:", error);
+            throw error;
         }
     };
 

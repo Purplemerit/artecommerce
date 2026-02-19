@@ -5,6 +5,7 @@ import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import { ProductProvider } from "./context/ProductContext";
 import { OrderProvider } from "./context/OrderContext";
+import { ConfigProvider } from "./context/ConfigContext";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -30,16 +31,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${playfair.variable} ${inter.variable} font-sans antialiased text-gray-900 bg-white`}>
+        <script src="https://checkout.razorpay.com/v1/checkout.js" async></script>
         <AuthProvider>
-          <ProductProvider>
-            <OrderProvider>
-              <CartProvider>
-                <WishlistProvider>
-                  {children}
-                </WishlistProvider>
-              </CartProvider>
-            </OrderProvider>
-          </ProductProvider>
+          <ConfigProvider>
+            <ProductProvider>
+              <OrderProvider>
+                <CartProvider>
+                  <WishlistProvider>
+                    {children}
+                  </WishlistProvider>
+                </CartProvider>
+              </OrderProvider>
+            </ProductProvider>
+          </ConfigProvider>
         </AuthProvider>
       </body>
     </html>

@@ -63,6 +63,7 @@ model Order {
   total           Float
   status          OrderStatus @default(PENDING)
   paymentStatus   PaymentStatus @default(PENDING) @map("payment_status")
+  shipmentStatus  String   @default("Processing") @map("shipment_status")
   shippingAddress Json     @map("shipping_address")
   razorpayOrderId String?  @map("razorpay_order_id")
   razorpayPaymentId String? @map("razorpay_payment_id")
