@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Check, ChevronLeft, Star, Clock, Package, Truck, Home, MapPin, CreditCard, ChevronRight, Lock } from "lucide-react";
 import { useOrders } from "../context/OrderContext";
+import { useCart } from "../context/CartContext";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Suspense, useState, useEffect } from "react";
@@ -14,11 +15,16 @@ function SuccessContent() {
     const orderId = searchParams.get("orderId");
     const customerName = searchParams.get("customerName") || "Customer";
     const { getOrder } = useOrders();
+    const { addToCart } = useCart();
     const { config } = useConfig();
     const order = orderId ? getOrder(orderId) : null;
 
     const [view, setView] = useState<"upsell" | "confirmation">("confirmation");
     const [timeLeft, setTimeLeft] = useState("");
+    const [addedItems, setAddedItems] = useState<number[]>([]);
+
+    const isPaid = order ? (order.status === "PAID" || order.status === "Paid") : false;
+    const isCOD = order ? (!order.razorpayPaymentId && !isPaid) : false;
 
     // Initialize view once order/config are available
     useEffect(() => {
@@ -52,11 +58,13 @@ function SuccessContent() {
             <div className="min-h-screen bg-[#faf9f6] pb-24 text-[#1a1a1a]">
                 {/* Paid Banner */}
                 <div className="max-w-[1240px] mx-auto px-6 pt-12">
-                    <div className="flex items-center space-x-2 text-[#108A44] mb-4">
-                        <div className="w-6 h-6 rounded-full border-2 border-[#108A44] flex items-center justify-center">
-                            <Check className="w-4 h-4" />
+                    <div className={`flex items-center space-x-2 ${isPaid ? "text-[#108A44]" : "text-amber-600"} mb-4`}>
+                        <div className={`w-6 h-6 rounded-full border-2 ${isPaid ? "border-[#108A44]" : "border-amber-600"} flex items-center justify-center`}>
+                            {isPaid ? <Check className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
                         </div>
-                        <span className="text-[18px] font-medium">You have paid for your order</span>
+                        <span className="text-[18px] font-medium">
+                            {isPaid ? "You have paid for your order" : isCOD ? "Order Confirmed - Payment Pending (COD)" : "Order Confirmed"}
+                        </span>
                     </div>
                     <button onClick={() => setView("confirmation")} className="flex items-center text-[13px] text-gray-500 hover:text-black mb-12">
                         View your order confirmation <ChevronRight className="w-4 h-4 ml-1" />
@@ -77,18 +85,38 @@ function SuccessContent() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16 px-4">
                         {upsellProducts.map(product => (
                             <div key={product.id} className="group flex flex-col">
-                                <div className="relative aspect-square mb-6 bg-gray-100 overflow-hidden rounded-sm">
-                                    <Image src={getProductImage(product.images[0])} alt={product.name} fill className="object-cover" />
-                                    <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm px-2 py-1 flex items-center space-x-1 rounded-sm">
-                                        <span className="text-[10px] font-bold">3.9</span>
-                                        <Star className="w-2.5 h-2.5 fill-[#108A44] text-[#108A44]" />
-                                        <span className="text-[10px] text-gray-400 border-l border-gray-200 pl-1">2.7k</span>
+                                <Link href={`/product/${product.id}`} className="block">
+                                    <div className="relative aspect-square mb-6 bg-gray-100 overflow-hidden rounded-sm">
+                                        <Image src={getProductImage(product.images[0])} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                                        <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm px-2 py-1 flex items-center space-x-1 rounded-sm">
+                                            <span className="text-[10px] font-bold">3.9</span>
+                                            <Star className="w-2.5 h-2.5 fill-[#108A44] text-[#108A44]" />
+                                            <span className="text-[10px] text-gray-400 border-l border-gray-200 pl-1">2.7k</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <h3 className="font-serif text-[16px] text-[#2A2A2A] mb-1">{product.name}</h3>
+                                    <h3 className="font-serif text-[16px] text-[#2A2A2A] mb-1 group-hover:underline">{product.name}</h3>
+                                </Link>
                                 <p className="text-[14px] font-bold mb-4">$ {product.price.toFixed(2)} USD</p>
-                                <button className="w-full border border-gray-200 py-3 text-[13px] font-bold text-gray-600 hover:bg-black hover:text-white transition-all rounded-sm uppercase tracking-wider bg-white">
-                                    Add To Cart
+                                <button
+                                    onClick={() => {
+                                        addToCart({
+                                            id: product.id,
+                                            name: product.name,
+                                            price: product.price,
+                                            image: product.images[0],
+                                            quantity: 1
+                                        });
+                                        setAddedItems(prev => [...prev, product.id]);
+                                        setTimeout(() => {
+                                            setAddedItems(prev => prev.filter(id => id !== product.id));
+                                        }, 2000);
+                                    }}
+                                    className={`w-full border border-gray-200 py-3 text-[13px] font-bold transition-all rounded-sm uppercase tracking-wider ${addedItems.includes(product.id)
+                                        ? "bg-[#108A44] text-white border-[#108A44]"
+                                        : "text-gray-600 hover:bg-black hover:text-white bg-white"
+                                        }`}
+                                >
+                                    {addedItems.includes(product.id) ? "Added!" : "Add To Cart"}
                                 </button>
                             </div>
                         ))}
@@ -125,7 +153,7 @@ function SuccessContent() {
                         <h4 className="text-[15px] font-bold mb-3">Order Details</h4>
                         <p className="text-[13px] text-gray-500">{order?.date || "October 19, 2023"}</p>
                         <p className="text-[13px] text-gray-500">Order #{orderId || "698698378"}</p>
-                        <p className="text-[13px] text-gray-500 mt-4">Order Status : {order?.status || "Paid"}</p>
+                        <p className="text-[13px] text-gray-500 mt-4">Order Status : {order?.status || (isPaid ? "Paid" : "Confirmed")}</p>
                         <p className="text-[13px] text-gray-500">Packages in this order : 1</p>
                         <p className="text-[13px] text-gray-500">Total items : {order?.items.length || 0}</p>
                     </div>
@@ -165,7 +193,7 @@ function SuccessContent() {
                 <div className="bg-white border border-[#E5E5E5] rounded-sm p-8 mb-16 relative">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
                         <div className="mb-4 md:mb-0">
-                            <p className="text-[14px] font-bold">{order?.status || "Paid"}</p>
+                            <p className="text-[14px] font-bold">{order?.status || (isPaid ? "Paid" : "Confirmed")}</p>
                             <p className="text-[12px] text-gray-500">{order?.items.length || 0} Products in this order</p>
                         </div>
                         <div className="text-left md:text-right">
@@ -208,11 +236,11 @@ function SuccessContent() {
                             return (
                                 <div key={idx} className="flex flex-col lg:flex-row items-center justify-between border-t border-gray-50 pt-10">
                                     <div className="flex items-center space-x-6 mb-6 lg:mb-0">
-                                        <div className="relative w-[100px] h-[100px] bg-gray-100 rounded-sm overflow-hidden flex-shrink-0">
+                                        <Link href={`/product/${product.id}`} className="relative w-[100px] h-[100px] bg-gray-100 rounded-sm overflow-hidden flex-shrink-0 block hover:opacity-80 transition-opacity">
                                             <Image src={getProductImage(product.images[0])} alt={product.name} fill className="object-cover" />
-                                        </div>
+                                        </Link>
                                         <div>
-                                            <p className="text-[14px] font-medium leading-tight max-w-[200px]">{product.name}</p>
+                                            <Link href={`/product/${product.id}`} className="text-[14px] font-medium leading-tight max-w-[200px] hover:underline block">{product.name}</Link>
                                             <p className="text-[14px] font-bold mt-1">${item.price.toFixed(2)}</p>
                                         </div>
                                     </div>
@@ -230,7 +258,27 @@ function SuccessContent() {
                                             <p className="text-[14px] font-medium text-gray-900">${item.price.toFixed(2)}</p>
                                         </div>
                                         <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-3 items-center">
-                                            <button className="bg-[#1a1a1a] text-white px-6 py-2.5 rounded-sm text-[13px] font-bold hover:bg-black w-full md:w-auto whitespace-nowrap">Buy Again</button>
+                                            <button
+                                                onClick={() => {
+                                                    addToCart({
+                                                        id: product.id,
+                                                        name: product.name,
+                                                        price: product.price,
+                                                        image: product.images[0],
+                                                        quantity: 1
+                                                    });
+                                                    setAddedItems(prev => [...prev, product.id]);
+                                                    setTimeout(() => {
+                                                        setAddedItems(prev => prev.filter(id => id !== product.id));
+                                                    }, 2000);
+                                                }}
+                                                className={`px-6 py-2.5 rounded-sm text-[13px] font-bold w-full md:w-auto whitespace-nowrap transition-all ${addedItems.includes(product.id)
+                                                    ? "bg-[#108A44] text-white"
+                                                    : "bg-[#1a1a1a] text-white hover:bg-black"
+                                                    }`}
+                                            >
+                                                {addedItems.includes(product.id) ? "Added!" : "Buy Again"}
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
