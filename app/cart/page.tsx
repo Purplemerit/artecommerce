@@ -92,33 +92,37 @@ export default function CartPage() {
                                 <p className="text-gray-500 text-center py-8">Your cart is empty.</p>
                             ) : (
                                 cart.map((item) => (
-                                    <div key={`${item.id}-${item.size}`} className="flex items-center py-4 border-b border-gray-50 last:border-0">
-                                        <div className="h-16 w-16 relative bg-gray-100 flex-shrink-0">
-                                            <Image src={item.image} alt={item.name} fill className="object-cover" />
+                                    <div key={`${item.id}-${item.size}`} className="flex flex-col sm:flex-row items-start sm:items-center py-6 border-b border-gray-50 last:border-0 gap-4">
+                                        <div className="flex items-center flex-1 w-full">
+                                            <div className="h-20 w-16 relative bg-gray-100 flex-shrink-0">
+                                                <Image src={item.image} alt={item.name} fill className="object-cover" />
+                                            </div>
+                                            <div className="ml-4 flex-1">
+                                                <h3 className="text-sm font-medium">{item.name}</h3>
+                                                <p className="text-xs text-gray-500">{item.size && `Size: ${item.size}`}</p>
+                                            </div>
                                         </div>
-                                        <div className="ml-4 flex-1">
-                                            <h3 className="text-sm font-medium">{item.name}</h3>
-                                            <p className="text-xs text-gray-500">{item.size && `Size: ${item.size}`}</p>
-                                        </div>
-                                        <div className="flex items-center space-x-4">
+                                        <div className="flex items-center justify-between w-full sm:w-auto sm:space-x-8">
                                             <div className="flex items-center border border-gray-200 rounded px-2 py-1 text-xs">
                                                 <button
                                                     onClick={() => updateQuantity(item.id, item.quantity - 1, item.size)}
-                                                    className="px-1"
+                                                    className="px-2 py-1"
                                                 >-</button>
-                                                <span className="px-2">{item.quantity}</span>
+                                                <span className="px-3 font-medium">{item.quantity}</span>
                                                 <button
                                                     onClick={() => updateQuantity(item.id, item.quantity + 1, item.size)}
-                                                    className="px-1"
+                                                    className="px-2 py-1"
                                                 >+</button>
                                             </div>
-                                            <span className="text-sm font-medium w-16 text-right">${(item.price * item.quantity).toFixed(2)}</span>
-                                            <button
-                                                onClick={() => removeFromCart(item.id, item.size)}
-                                                className="text-gray-400 hover:text-red-500 flex items-center text-xs"
-                                            >
-                                                <Trash2 className="w-4 h-4 mr-1" /> Remove
-                                            </button>
+                                            <div className="flex flex-col items-end">
+                                                <span className="text-sm font-bold">${(item.price * item.quantity).toFixed(2)}</span>
+                                                <button
+                                                    onClick={() => removeFromCart(item.id, item.size)}
+                                                    className="text-gray-400 hover:text-red-500 flex items-center text-[10px] mt-1"
+                                                >
+                                                    <Trash2 className="w-3 h-3 mr-1" /> Remove
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 ))

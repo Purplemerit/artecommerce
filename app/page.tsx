@@ -131,64 +131,31 @@ export default function Home() {
           </h2>
         </div>
 
-        <div className="flex flex-col lg:flex-row justify-center items-center gap-10 xl:gap-20">
+        <div className="flex flex-col lg:flex-row justify-center items-center gap-10">
           {/* Left Column - Features */}
-          <div className="flex flex-col justify-between h-[773px]">
-            {/* Feature 1 */}
-            <div className="w-[420px] h-[160px] bg-white border border-[#2A2A2A] flex flex-col justify-center px-10 hover:shadow-lg transition-shadow">
-              <div className="flex items-center gap-4 mb-3">
-                <div className="relative w-[42px] h-[42px] shrink-0">
-                  <Image src="/images/Frame 2121453497.svg" alt="Icon" fill className="object-contain" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:flex lg:flex-col gap-6 w-full lg:w-auto">
+            {[
+              { title: "User-Friendly Interface", desc: "Intuitive design that makes navigation seamless for all users.", icon: "/images/Frame 2121453497.svg" },
+              { title: "High Customizability", desc: "Allows users to tailor their experience with various settings.", icon: "/images/Frame 2121453498.svg" },
+              { title: "Responsive Design", desc: "Optimized for both desktop and mobile for a consistent experience.", icon: "/images/Frame 2121453499.svg" },
+              { title: "Integrated Community", desc: "Foster connections and growth within a vibrant community.", icon: "/images/Frame 2121453084.svg" }
+            ].map((f, i) => (
+              <div key={i} className="w-full lg:w-[420px] min-h-[160px] bg-white border border-[#2A2A2A] flex flex-col justify-center px-6 md:px-10 py-6 hover:shadow-lg transition-shadow">
+                <div className="flex items-center gap-4 mb-3">
+                  <div className="relative w-[42px] h-[42px] shrink-0">
+                    <Image src={f.icon} alt="Icon" fill className="object-contain" />
+                  </div>
+                  <h3 className="font-serif font-semibold text-[20px] md:text-[24px] leading-tight text-black">{f.title}</h3>
                 </div>
-                <h3 className="font-serif font-semibold text-[24px] leading-none text-black">User-Friendly Interface</h3>
+                <p className="font-sans font-medium text-[13px] tracking-wide text-black leading-relaxed">
+                  {f.desc}
+                </p>
               </div>
-              <p className="font-sans font-medium text-[13px] tracking-wide text-black leading-tight">
-                Intuitive design that makes navigation seamless for all users, regardless of tech-savviness.
-              </p>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="w-[420px] h-[160px] bg-white border border-[#2A2A2A] flex flex-col justify-center px-10 hover:shadow-lg transition-shadow">
-              <div className="flex items-center gap-4 mb-3">
-                <div className="relative w-[42px] h-[42px] shrink-0">
-                  <Image src="/images/Frame 2121453498.svg" alt="Icon" fill className="object-contain" />
-                </div>
-                <h3 className="font-serif font-semibold text-[24px] leading-none text-black">High Customizability</h3>
-              </div>
-              <p className="font-sans font-medium text-[13px] tracking-wide text-black leading-tight">
-                Allows users to tailor their experience with various settings and personalization options.
-              </p>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="w-[420px] h-[160px] bg-white border border-[#2A2A2A] flex flex-col justify-center px-10 hover:shadow-lg transition-shadow">
-              <div className="flex items-center gap-4 mb-3">
-                <div className="relative w-[42px] h-[42px] shrink-0">
-                  <Image src="/images/Frame 2121453499.svg" alt="Icon" fill className="object-contain" />
-                </div>
-                <h3 className="font-serif font-semibold text-[24px] leading-none text-black">Responsive Design</h3>
-              </div>
-              <p className="font-sans font-medium text-[13px] tracking-wide text-black leading-tight">
-                Optimized for both desktop and mobile, providing a consistent experience across all devices.
-              </p>
-            </div>
-
-            {/* Feature 4 */}
-            <div className="w-[420px] h-[160px] bg-white border border-[#2A2A2A] flex flex-col justify-center px-10 hover:shadow-lg transition-shadow">
-              <div className="flex items-center gap-4 mb-3">
-                <div className="relative w-[42px] h-[42px] shrink-0">
-                  <Image src="/images/Frame 2121453084.svg" alt="Icon" fill className="object-contain" />
-                </div>
-                <h3 className="font-serif font-semibold text-[24px] leading-none text-black">Integrated Community</h3>
-              </div>
-              <p className="font-sans font-medium text-[13px] tracking-wide text-black leading-tight">
-                Foster connections and growth within a vibrant community of like-minded artists.
-              </p>
-            </div>
+            ))}
           </div>
 
-          {/* Right Column - Large Image */}
-          <div className="w-full lg:w-[653px] h-[500px] lg:h-[773px] relative bg-gray-100">
+          {/* Right Column - Image */}
+          <div className="w-full lg:w-[653px] aspect-square lg:aspect-auto lg:h-[720px] relative bg-gray-100">
             <Image
               src="/images/Frame 2121453297.svg"
               alt="Platform Features"
@@ -256,7 +223,7 @@ export default function Home() {
       <section className="py-32 px-6 max-w-[1400px] mx-auto">
         <div className="flex flex-col lg:flex-row gap-20 items-start">
           {/* Sticky Left Column */}
-          <div className="w-full lg:w-1/3 sticky top-32 h-fit flex flex-col items-start gap-10">
+          <div className="w-full lg:w-1/3 h-fit flex flex-col items-start gap-10">
             <h2 className="font-serif font-normal text-[50px] leading-[60px] text-[#2A2A2A]">
               Latest from our stories
             </h2>

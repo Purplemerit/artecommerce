@@ -259,26 +259,26 @@ export default function CheckoutPage() {
             </div>
 
             {/* Stepper */}
-            <div className="max-w-[600px] mx-auto pt-8 flex items-center justify-between relative mb-16">
+            <div className="max-w-[600px] mx-auto pt-8 flex items-center justify-between relative mb-16 px-4">
                 <div className="flex flex-col items-center z-10">
                     <div className="w-6 h-6 rounded-full bg-[#1a1a1a] flex items-center justify-center mb-2">
                         <Check className="w-3 h-3 text-white" />
                     </div>
-                    <span className="text-[12px] font-medium text-[#1a1a1a]">Shopping Cart</span>
+                    <span className="text-[10px] sm:text-[12px] font-medium text-[#1a1a1a]">Cart</span>
                 </div>
-                <div className="h-[1px] bg-gray-200 flex-1 mx-4 -mt-6"></div>
+                <div className="h-[1px] bg-gray-200 flex-1 mx-2 sm:mx-4 -mt-6"></div>
                 <div className="flex flex-col items-center z-10">
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-2 ${step === "payment" ? "bg-[#1a1a1a]" : "border-2 border-[#1a1a1a] bg-[#faf9f6]"}`}>
                         {step === "payment" ? <Check className="w-3 h-3 text-white" /> : <div className="w-2 h-2 rounded-full bg-[#1a1a1a]"></div>}
                     </div>
-                    <span className="text-[12px] font-medium text-[#1a1a1a]">Address</span>
+                    <span className="text-[10px] sm:text-[12px] font-medium text-[#1a1a1a]">Address</span>
                 </div>
-                <div className="h-[1px] bg-gray-200 flex-1 mx-4 -mt-6"></div>
+                <div className="h-[1px] bg-gray-200 flex-1 mx-2 sm:mx-4 -mt-6"></div>
                 <div className="flex flex-col items-center z-10">
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-2 ${step === "payment" ? "border-2 border-[#1a1a1a] bg-[#faf9f6]" : "bg-gray-300"}`}>
                         {step === "payment" && <div className="w-2 h-2 rounded-full bg-[#1a1a1a]"></div>}
                     </div>
-                    <span className={`text-[12px] font-medium ${step === "payment" ? "text-[#1a1a1a]" : "text-gray-400"}`}>Payment info</span>
+                    <span className={`text-[10px] sm:text-[12px] font-medium ${step === "payment" ? "text-[#1a1a1a]" : "text-gray-400"}`}>Payment</span>
                 </div>
             </div>
 
@@ -331,16 +331,16 @@ export default function CheckoutPage() {
                                     <option>United States</option>
                                     <option>United Kingdom</option>
                                 </select>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <input name="firstName" required placeholder="First name" value={address.firstName} onChange={handleInputChange} className={`h-[52px] bg-[#F7F7F7] border px-4 rounded-sm text-[14px] ${errors.includes('firstName') ? 'border-red-500' : 'border-[#E5E5E5]'}`} />
-                                    <input name="lastName" required placeholder="Last name" value={address.lastName} onChange={handleInputChange} className={`h-[52px] bg-[#F7F7F7] border px-4 rounded-sm text-[14px] ${errors.includes('lastName') ? 'border-red-500' : 'border-[#E5E5E5]'}`} />
+                                <div className="flex flex-col sm:flex-row gap-4">
+                                    <input name="firstName" required placeholder="First name" value={address.firstName} onChange={handleInputChange} className={`flex-1 h-[52px] bg-[#F7F7F7] border px-4 rounded-sm text-[14px] ${errors.includes('firstName') ? 'border-red-500' : 'border-[#E5E5E5]'}`} />
+                                    <input name="lastName" required placeholder="Last name" value={address.lastName} onChange={handleInputChange} className={`flex-1 h-[52px] bg-[#F7F7F7] border px-4 rounded-sm text-[14px] ${errors.includes('lastName') ? 'border-red-500' : 'border-[#E5E5E5]'}`} />
                                 </div>
                                 <input name="phone" required type="tel" placeholder="Mobile Number for delivery updates" value={address.phone} onChange={handleInputChange} className={`w-full h-[52px] bg-[#F7F7F7] border px-4 rounded-sm text-[14px] ${errors.includes('phone') ? 'border-red-500' : 'border-[#E5E5E5]'}`} />
                                 <input name="address" required placeholder="Address (House No, Building, Street, Area)" value={address.address} onChange={handleInputChange} className={`w-full h-[52px] bg-[#F7F7F7] border px-4 rounded-sm text-[14px] ${errors.includes('address') ? 'border-red-500' : 'border-[#E5E5E5]'}`} />
                                 <input name="apartment" placeholder="Apartment, suite, etc. (optional)" value={address.apartment} onChange={handleInputChange} className="w-full h-[52px] bg-[#F7F7F7] border border-[#E5E5E5] px-4 rounded-sm text-[14px]" />
-                                <div className="grid grid-cols-2 gap-4">
-                                    <input name="city" required placeholder="City" value={address.city} onChange={handleInputChange} className={`h-[52px] bg-[#F7F7F7] border px-4 rounded-sm text-[14px] ${errors.includes('city') ? 'border-red-500' : 'border-[#E5E5E5]'}`} />
-                                    <input name="zipCode" required placeholder="Pincode" value={address.zipCode} onChange={handleInputChange} className={`h-[52px] bg-[#F7F7F7] border px-4 rounded-sm text-[14px] ${errors.includes('zipCode') ? 'border-red-500' : 'border-[#E5E5E5]'}`} />
+                                <div className="flex flex-col sm:flex-row gap-4">
+                                    <input name="city" required placeholder="City" value={address.city} onChange={handleInputChange} className={`flex-1 h-[52px] bg-[#F7F7F7] border px-4 rounded-sm text-[14px] ${errors.includes('city') ? 'border-red-500' : 'border-[#E5E5E5]'}`} />
+                                    <input name="zipCode" required placeholder="Pincode" value={address.zipCode} onChange={handleInputChange} className={`flex-1 h-[52px] bg-[#F7F7F7] border px-4 rounded-sm text-[14px] ${errors.includes('zipCode') ? 'border-red-500' : 'border-[#E5E5E5]'}`} />
                                 </div>
 
                                 {errors.length > 0 && (
@@ -434,7 +434,7 @@ export default function CheckoutPage() {
 
                             <div
                                 onClick={() => setSelectedPayment('cod')}
-                                className={`bg-white border rounded-lg p-5 flex items-center space-x-4 cursor-pointer transition-all w-1/2 ${selectedPayment === 'cod' ? 'border-black ring-1 ring-black' : 'border-[#E5E5E5] hover:border-gray-400'}`}
+                                className={`bg-white border rounded-lg p-5 flex items-center space-x-4 cursor-pointer transition-all w-full sm:w-1/2 ${selectedPayment === 'cod' ? 'border-black ring-1 ring-black' : 'border-[#E5E5E5] hover:border-gray-400'}`}
                             >
                                 <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center">
                                     <Truck className="w-6 h-6 text-gray-500" />
