@@ -42,7 +42,7 @@ export default function NewArrivalsPage() {
             <Navbar variant="light" />
 
             {/* Hero Section */}
-            <section className="relative h-[40vh] min-h-[400px] flex items-center justify-center text-center overflow-hidden">
+            <section className="relative h-[30vh] md:h-[40vh] min-h-[300px] flex items-center justify-center text-center overflow-hidden">
                 <Image
                     src={getProductImage("/images/unsplash_nimElTcTNyY (1).png")}
                     alt="New Arrivals"
@@ -51,9 +51,9 @@ export default function NewArrivalsPage() {
                     priority
                 />
                 <div className="absolute inset-0 bg-black/40" />
-                <div className="relative z-10 p-4">
-                    <h1 className="font-serif text-5xl md:text-6xl text-white mb-4">New Arrivals</h1>
-                    <p className="text-white/80 max-w-lg mx-auto font-light tracking-wide">
+                <div className="relative z-10 p-6 md:p-4">
+                    <h1 className="font-serif text-4xl md:text-6xl text-white mb-4">New Arrivals</h1>
+                    <p className="text-white/80 max-w-lg mx-auto font-light tracking-wide text-sm md:text-base">
                         Explore our latest additions to the collection.
                     </p>
                 </div>
@@ -61,14 +61,14 @@ export default function NewArrivalsPage() {
 
             {/* Filter / Sort Bar */}
             <div className="border-b border-gray-100 bg-white sticky top-0 z-40">
-                <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center justify-between text-sm">
-                    <div className="flex space-x-8">
+                <div className="max-w-[1400px] mx-auto px-6 h-auto md:h-14 flex flex-col md:flex-row items-center justify-between text-sm py-4 md:py-0 gap-4 md:gap-0">
+                    <div className="flex space-x-4 md:space-x-8 overflow-x-auto no-scrollbar w-full md:w-auto pb-2 md:pb-0">
                         {["Latest Additions", "This Week", "This Month"].map((filter) => (
                             <button
                                 key={filter}
                                 onClick={() => setActiveFilter(filter)}
-                                className={`transition-all duration-200 ${activeFilter === filter
-                                    ? "text-black font-semibold border-b-2 border-black pb-4 -mb-4 mt-4"
+                                className={`transition-all duration-200 whitespace-nowrap ${activeFilter === filter
+                                    ? "text-black font-semibold border-b-2 border-black pb-2 md:pb-4 -mb-2 md:-mb-4 mt-2 md:mt-4"
                                     : "text-gray-400 hover:text-black"
                                     }`}
                             >
@@ -76,7 +76,7 @@ export default function NewArrivalsPage() {
                             </button>
                         ))}
                     </div>
-                    <div className="relative group">
+                    <div className="relative group w-full md:w-auto flex justify-end">
                         <div className="flex items-center space-x-2 text-gray-400 cursor-pointer hover:text-black">
                             <span>Sort by: <span className="text-black font-medium">{sortBy}</span></span>
                         </div>
