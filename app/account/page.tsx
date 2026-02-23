@@ -54,7 +54,7 @@ export default function AccountPage() {
         <main className="min-h-screen bg-[#faf9f6]">
             <Navbar variant="light" />
 
-            <div className="pt-24 px-4 max-w-7xl mx-auto">
+            <div className="pt-32 px-4 max-w-7xl mx-auto">
                 <div className="mb-8">
                     <h1 className="font-serif text-3xl mb-2">Welcome, {user.name}</h1>
                     <p className="text-sm text-gray-400">Manage your profile, orders and track shipments.</p>
