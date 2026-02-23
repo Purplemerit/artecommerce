@@ -80,7 +80,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         <main className="min-h-screen bg-[#fff] text-[#1a1a1a]">
             <Navbar variant="light" />
             {/* Breadcrumb */}
-            <div className="pt-[80px] lg:pt-[120px] px-4 lg:pl-[80px] flex items-center h-[24px] gap-[4px] text-[12px] md:text-[13px] text-gray-500 font-normal mb-10 overflow-x-auto no-scrollbar whitespace-nowrap">
+            <div className="pt-[110px] lg:pt-[140px] px-4 lg:pl-[80px] flex items-center h-auto min-h-[40px] gap-[4px] text-[12px] md:text-[13px] text-gray-500 font-normal mb-6 overflow-x-auto no-scrollbar whitespace-nowrap">
                 <Link href="/shop" className="hover:text-black transition-colors shrink-0">All products</Link>
                 <ChevronRight className="w-3 h-3 text-gray-400 shrink-0" />
                 <Link href="/shop" className="hover:text-black transition-colors shrink-0">{product.type || "Art"}</Link>
