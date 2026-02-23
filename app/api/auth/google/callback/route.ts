@@ -65,7 +65,8 @@ export async function GET(request: NextRequest) {
             .setExpirationTime('7d')
             .sign(secret);
 
-        const response = NextResponse.redirect(`${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/`);
+        const returnTo = request.cookies.get('return_to')?.value || '/';
+        const response = NextResponse.redirect(`${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}${returnTo}`);
 
         // Set cookie
         response.cookies.set('auth-token', token, {
@@ -75,6 +76,9 @@ export async function GET(request: NextRequest) {
             maxAge: 60 * 60 * 24 * 7,
             path: '/',
         });
+
+        // Clear the return_to cookie
+        response.cookies.delete('return_to');
 
         return response;
 

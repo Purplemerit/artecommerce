@@ -38,3 +38,39 @@ export async function sendOtpEmail(email: string, otp: string) {
         return { success: false, error };
     }
 }
+export async function sendPasswordResetEmail(email: string, resetLink: string) {
+    if (process.env.NODE_ENV !== 'production') {
+        console.log(`\n🚀 [DEV] Reset Link for ${email}: ${resetLink}\n`);
+    }
+
+    try {
+        const { data, error } = await resend.emails.send({
+            from: 'Art Ecommerce <onboarding@purplemerit.com>',
+            to: [email],
+            subject: 'Reset your password - Art Ecommerce',
+            html: `
+                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e5e5e5; border-radius: 8px;">
+                    <h1 style="color: #1a1a1a; font-size: 24px;">Reset Your Password</h1>
+                    <p style="color: #666; font-size: 16px;">We received a request to reset your password. Click the button below to choose a new one:</p>
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="${resetLink}" style="background-color: #1a1a1a; color: #ffffff; padding: 12px 24px; border-radius: 4px; text-decoration: none; font-weight: bold; display: inline-block;">Reset Password</a>
+                    </div>
+                    <p style="color: #666; font-size: 14px;">If the button doesn't work, copy and paste this link into your browser:</p>
+                    <p style="color: #0066cc; font-size: 12px; word-break: break-all;">${resetLink}</p>
+                    <p style="color: #666; font-size: 14px; margin-top: 20px;">This link will expire in 1 hour.</p>
+                    <p style="color: #999; font-size: 12px; margin-top: 40px;">If you didn't request a password reset, you can safely ignore this email.</p>
+                </div>
+            `,
+        });
+
+        if (error) {
+            console.error('Resend Error:', error);
+            return { success: false, error };
+        }
+
+        return { success: true, data };
+    } catch (error) {
+        console.error('Email sending failed:', error);
+        return { success: false, error };
+    }
+}

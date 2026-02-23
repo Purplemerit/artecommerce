@@ -18,7 +18,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     const [selectedSize, setSelectedSize] = useState("A3");
     const [isAdded, setIsAdded] = useState(false);
     const { addToCart } = useCart();
-    const { addToWishlist, isInWishlist } = useWishlist();
+    const { toggleWishlist, isInWishlist } = useWishlist();
 
     // Use Context for Data
     const { getProduct, products, loading } = useProducts();
@@ -80,7 +80,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             quantity: quantity,
             size: selectedSize
         });
-        router.push("/checkout");
+        router.push("/cart");
     };
 
     return (
@@ -226,21 +226,21 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                         <div className="space-y-4 pt-4">
                             <div className="flex gap-4 h-[56px]">
                                 <button
-                                    onClick={() => addToWishlist({
+                                    onClick={() => toggleWishlist({
                                         id: productId,
                                         name: product.name,
                                         price: product.price,
                                         image: getProductImage(mainImage)
                                     })}
-                                    className="flex-1 border border-gray-200 flex items-center justify-center space-x-2 hover:border-black font-medium text-[14px] transition-colors rounded-sm bg-white"
+                                    className="flex-1 border border-gray-200 flex items-center justify-center space-x-2 hover:border-black font-medium text-[14px] transition-all rounded-sm bg-white cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
                                 >
                                     <Heart className={`w-4 h-4 ${isInWishlist(productId) ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
-                                    <span>Add to Wishlist</span>
+                                    <span>{isInWishlist(productId) ? "Remove from Wishlist" : "Add to Wishlist"}</span>
                                 </button>
                                 <button
                                     onClick={handleAddToCart}
                                     disabled={isAdded}
-                                    className={`flex-1 border border-gray-200 flex items-center justify-center space-x-2 font-medium text-[14px] transition-all rounded-sm ${isAdded ? 'bg-green-50 border-green-200 text-green-600' : 'bg-white hover:border-black'}`}
+                                    className={`flex-1 border border-gray-200 flex items-center justify-center space-x-2 font-medium text-[14px] transition-all rounded-sm cursor-pointer hover:scale-[1.02] active:scale-[0.98] ${isAdded ? 'bg-green-50 border-green-200 text-green-600' : 'bg-white hover:border-black'}`}
                                 >
                                     {isAdded ? (
                                         <>
@@ -257,9 +257,9 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                             </div>
                             <button
                                 onClick={handleBuyNow}
-                                className="w-full h-[56px] bg-[#1a1a1a] text-white hover:bg-black font-medium text-[15px] transition-colors flex items-center justify-center space-x-3 rounded-sm"
+                                className="w-full h-[56px] bg-[#1a1a1a] text-white hover:bg-black font-medium text-[15px] transition-all flex items-center justify-center space-x-3 rounded-sm cursor-pointer hover:scale-[1.01] active:scale-[0.99] shadow-lg hover:shadow-xl"
                             >
-                                <Heart className="w-4 h-4 fill-white" />
+                                <CreditCard className="w-4 h-4 text-white" />
                                 <span>Buy Now</span>
                             </button>
                         </div>
@@ -274,8 +274,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                 { name: 'PayPal', src: '/images/logos_paypal.png' },
                                 { name: 'Card', src: '/images/Vector.svg' }
                             ].map((pay) => (
-                                <div key={pay.name} className="h-[50px] border border-[#EDEDED] bg-[#F4F4F4] rounded-sm flex items-center justify-center hover:border-gray-300 transition-all cursor-pointer p-2">
-                                    <div className="relative w-full h-full flex items-center justify-center">
+                                <div
+                                    key={pay.name}
+                                    className="h-[50px] border border-[#EDEDED] bg-[#F4F4F4] rounded-sm flex items-center justify-center hover:border-black hover:bg-white hover:-translate-y-1 hover:shadow-md hover:scale-105 transition-all duration-300 cursor-pointer p-2 group"
+                                >
+                                    <div className="relative w-full h-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                                         <Image
                                             src={pay.src}
                                             alt={pay.name}

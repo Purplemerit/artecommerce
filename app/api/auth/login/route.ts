@@ -9,7 +9,8 @@ const secret = new TextEncoder().encode(
 
 export async function POST(request: NextRequest) {
     try {
-        const { email, password } = await request.json();
+        const { email: rawEmail, password } = await request.json();
+        const email = rawEmail?.trim().toLowerCase();
 
         // Validate input
         if (!email || !password) {
@@ -20,8 +21,13 @@ export async function POST(request: NextRequest) {
         }
 
         // Find user
-        const user = await prisma.user.findUnique({
-            where: { email },
+        const user = await prisma.user.findFirst({
+            where: {
+                email: {
+                    equals: email,
+                    mode: 'insensitive'
+                }
+            },
         });
 
         if (!user) {

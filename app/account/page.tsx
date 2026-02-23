@@ -19,7 +19,7 @@ export default function AccountPage() {
 
     useEffect(() => {
         if (!isLoading && !user) {
-            router.push("/login");
+            router.push(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
         }
     }, [user, isLoading, router]);
 
@@ -190,9 +190,9 @@ export default function AccountPage() {
                                         </div>
                                         <div className="flex items-center gap-3">
                                             <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${['paid', 'delivered'].includes(order.status?.toLowerCase()) ? "bg-green-100 text-green-600" :
-                                                    order.status?.toLowerCase() === 'shipped' ? "bg-blue-100 text-blue-600" :
-                                                        order.status?.toLowerCase() === 'cancelled' ? "bg-red-100 text-red-600" :
-                                                            "bg-yellow-100 text-yellow-600"
+                                                order.status?.toLowerCase() === 'shipped' ? "bg-blue-100 text-blue-600" :
+                                                    order.status?.toLowerCase() === 'cancelled' ? "bg-red-100 text-red-600" :
+                                                        "bg-yellow-100 text-yellow-600"
                                                 }`}>
                                                 {order.status}
                                             </span>

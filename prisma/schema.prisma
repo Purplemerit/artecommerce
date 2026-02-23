@@ -19,6 +19,8 @@ model User {
   isVerified    Boolean   @default(false) @map("is_verified")
   otp           String?
   otpExpires    DateTime? @map("otp_expires")
+  resetToken    String?   @unique @map("reset_token")
+  resetTokenExpires DateTime? @map("reset_token_expires")
   googleId      String?   @unique @map("google_id")
   image         String?
   createdAt     DateTime  @default(now())

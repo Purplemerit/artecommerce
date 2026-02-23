@@ -168,15 +168,25 @@ export default function FAQPage() {
                 </div>
 
                 {/* Contact CTA */}
-                <div className="mt-24 bg-black text-white p-12 text-center rounded-sm">
-                    <MessageCircle className="w-10 h-10 mx-auto mb-6 text-gray-400" />
-                    <h3 className="font-serif text-3xl mb-4">Still have questions?</h3>
-                    <p className="text-gray-400 mb-8 max-w-md mx-auto">
-                        If you can&apos;t find what you&apos;re looking for, our support team is here to help.
-                    </p>
-                    <button className="bg-white text-black px-8 py-3 text-sm font-medium hover:bg-gray-100 transition-colors rounded-sm uppercase tracking-wider">
-                        Contact Support
-                    </button>
+                <div className="mt-32 relative overflow-hidden bg-[#F9F9F7] py-24 px-8 md:px-16 text-center rounded-sm border border-gray-100">
+                    {/* Subtle aesthetic glow */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(0,0,0,0.02)_0%,_transparent_70%)] pointer-events-none" />
+
+                    <div className="relative z-10">
+                        <MessageCircle className="w-12 h-12 mx-auto mb-8 text-gray-400 stroke-[1]" />
+                        <h3 className="font-serif text-4xl md:text-6xl text-gray-900 mb-8 tracking-tight leading-tight">
+                            Still have questions?
+                        </h3>
+                        <p className="text-gray-500 mb-12 max-w-xl mx-auto text-lg md:text-xl font-light leading-relaxed">
+                            Our dedicated support team is available to assist you in preserving the integrity of your collection.
+                        </p>
+                        <button
+                            onClick={() => window.location.href = 'mailto:Info@example.com'}
+                            className="bg-black text-white px-12 py-5 text-[11px] font-black uppercase tracking-[0.4em] hover:bg-gray-800 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-xl"
+                        >
+                            Contact Support
+                        </button>
+                    </div>
                 </div>
             </div>
 
