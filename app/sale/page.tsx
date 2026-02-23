@@ -68,14 +68,14 @@ export default function SalePage() {
 
             {/* Filter / Sort Bar */}
             <div className="border-b border-gray-100 bg-white sticky top-0 z-40">
-                <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center justify-between text-sm">
-                    <div className="flex space-x-8">
+                <div className="max-w-[1400px] mx-auto px-6 py-4 md:py-0 md:h-14 flex flex-col md:flex-row items-center justify-between text-sm gap-4 md:gap-0">
+                    <div className="flex space-x-4 md:space-x-8 overflow-x-auto no-scrollbar w-full md:w-auto pb-2 md:pb-0">
                         {["Sale Items", "Up to 30% Off", "Clearance"].map((filter) => (
                             <button
                                 key={filter}
                                 onClick={() => setActiveFilter(filter)}
-                                className={`transition-all duration-200 ${activeFilter === filter
-                                    ? "text-black font-semibold border-b-2 border-black pb-4 -mb-4 mt-4"
+                                className={`transition-all duration-200 whitespace-nowrap ${activeFilter === filter
+                                    ? "text-black font-semibold border-b-2 border-black pb-2 md:pb-4 -mb-2 md:-mb-4 mt-2 md:mt-4"
                                     : "text-gray-400 hover:text-black"
                                     }`}
                             >
@@ -83,8 +83,8 @@ export default function SalePage() {
                             </button>
                         ))}
                     </div>
-                    <div className="relative group">
-                        <div className="flex items-center space-x-2 text-gray-400 cursor-pointer hover:text-black">
+                    <div className="relative group w-full md:w-auto flex justify-end">
+                        <div className="flex items-center space-x-2 text-gray-400 cursor-pointer hover:text-black text-[12px] md:text-sm">
                             <span>Sort by: <span className="text-black font-medium">{sortBy}</span></span>
                         </div>
                         <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-100 shadow-xl rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">

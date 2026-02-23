@@ -69,7 +69,7 @@ export default function Footer() {
                     </div>
 
                     {/* Links Columns */}
-                    <div className="flex gap-20 mt-12 lg:mt-0 lg:mr-32">
+                    <div className="flex flex-col sm:flex-row gap-12 sm:gap-20 mt-12 lg:mt-0 lg:mr-32">
                         {/* Pages */}
                         <div className="flex flex-col gap-6">
                             <h3 className="font-serif text-[24px] text-[#2A2A2A]">Pages</h3>

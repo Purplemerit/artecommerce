@@ -37,10 +37,10 @@ export default function AboutPage() {
             </section>
 
             {/* Art Thoughtfully Chosen Section */}
-            <section className="py-24 px-4 bg-[#faf9f6]">
+            <section className="py-16 md:py-24 px-4 bg-[#faf9f6]">
                 <div className="max-w-[1400px] mx-auto text-center">
-                    <h2 className="font-serif font-normal text-[48px] leading-[60px] text-[#2A2A2A] mb-[50px]">Art, thoughtfully chosen</h2>
-                    <div className="relative w-full max-w-[1280px] h-[395px] mx-auto mb-[50px] overflow-hidden">
+                    <h2 className="font-serif font-normal text-[32px] md:text-[48px] leading-tight md:leading-[60px] text-[#2A2A2A] mb-8 md:mb-[50px]">Art, thoughtfully chosen</h2>
+                    <div className="relative w-full max-w-[1280px] h-[250px] md:h-[395px] mx-auto mb-8 md:mb-[50px] overflow-hidden">
                         <Image
                             src="/images/454691cbcf505d10646bffa5c5a9cbbf3fd0b032.jpg"
                             alt="Textured Art Details"
@@ -48,7 +48,7 @@ export default function AboutPage() {
                             className="object-cover"
                         />
                     </div>
-                    <p className="font-sans font-light text-[24px] leading-[45px] text-[#2A2A2A] max-w-[1280px] mx-auto text-center">
+                    <p className="font-sans font-light text-[18px] md:text-[24px] leading-relaxed md:leading-[45px] text-[#2A2A2A] max-w-[1280px] mx-auto text-center px-2">
                         We believe art should be personal. Every piece in our collection is selected for its ability to live with you — to grow familiar, to be loved in, and to quietly shape the atmosphere of a space. We focus on balance, texture, and emotion rather than trends. Art that stays relevant long after the first impression.
                     </p>
                 </div>
@@ -117,8 +117,8 @@ export default function AboutPage() {
             <section className="py-24 px-4 bg-[#faf9f6]">
                 <div className="max-w-[1400px] mx-auto">
                     <div className="text-center mb-16">
-                        <h2 className="font-serif text-[48px] leading-tight text-[#2A2A2A] mb-10">Our Work</h2>
-                        <p className="font-sans font-light text-[24px] leading-[45px] text-[#2A2A2A] max-w-[1280px] mx-auto mb-16">
+                        <h2 className="font-serif text-[32px] md:text-[48px] leading-tight text-[#2A2A2A] mb-6 md:mb-10">Our Work</h2>
+                        <p className="font-sans font-light text-[18px] md:text-[24px] leading-relaxed md:leading-[45px] text-[#2A2A2A] max-w-[1280px] mx-auto mb-10 md:mb-16 px-2">
                             Our collections bring together original artworks and carefully crafted reproductions, created in collaboration with independent artists and designers. Each piece is chosen for its tone, composition, and emotional weight — not for mass appeal. This is art meant to be lived with, not rushed through.
                         </p>
                     </div>
@@ -164,7 +164,7 @@ export default function AboutPage() {
                     </div>
                     <div className="order-1 lg:order-2">
                         <span className="font-sans text-xs font-bold tracking-widest uppercase text-gray-400 mb-4 block">OUR VISION</span>
-                        <h2 className="font-serif font-semibold text-[48px] leading-tight text-[#2A2A2A] mb-6">
+                        <h2 className="font-serif font-semibold text-[32px] md:text-[48px] leading-tight text-[#2A2A2A] mb-6">
                             A world where every wardrobe tells a story of conscious choices
                         </h2>
                         <p className="font-sans font-normal text-[16px] leading-relaxed text-[#2A2A2A]">
