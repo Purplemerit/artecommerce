@@ -5,7 +5,8 @@ import { sendOtpEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
     try {
-        const { email, password, name } = await request.json();
+        const { email: rawEmail, password, name } = await request.json();
+        const email = rawEmail?.trim().toLowerCase();
 
         // Validate input
         if (!email || !password || !name) {

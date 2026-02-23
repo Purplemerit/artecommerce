@@ -3,13 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "../../context/AuthContext";
-import { useRouter } from "next/navigation";
-import React, { useState, useEffect } from "react";
-import { Eye, EyeOff, Loader2, Check, X } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useState, useEffect, Suspense } from "react";
+import { Eye, EyeOff, Loader2, Check, X, ArrowLeft } from "lucide-react";
 
-export default function SignupPage() {
+function SignupContent() {
     const { signup } = useAuth();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const redirectPath = searchParams.get("redirect") || "/";
+
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -70,7 +73,7 @@ export default function SignupPage() {
         const result = await signup(formData.email, formData.password, formData.name);
 
         if (result.success) {
-            router.push(`/verify-otp?userId=${result.userId}`);
+            router.push(`/verify-otp?userId=${result.userId}&redirect=${encodeURIComponent(redirectPath)}`);
         } else {
             setError(result.error || "Signup failed. Please try again.");
             setLoading(false);
@@ -116,7 +119,7 @@ export default function SignupPage() {
                         Please check your email to verify your account.
                     </p>
                     <p className="text-gray-400 text-xs">
-                        Redirecting to login...
+                        Redirecting to verification...
                     </p>
                 </div>
             </div>
@@ -125,6 +128,15 @@ export default function SignupPage() {
 
     return (
         <div className="relative min-h-screen flex items-center justify-center p-4">
+            {/* Back to Home Button */}
+            <Link
+                href="/"
+                className="absolute top-8 left-8 z-20 flex items-center space-x-2 text-white/80 hover:text-white transition-colors bg-black/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/10"
+            >
+                <ArrowLeft className="w-4 h-4" />
+                <span className="text-sm font-medium">Back to Home</span>
+            </Link>
+
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <Image
@@ -328,7 +340,7 @@ export default function SignupPage() {
                     <div className="mt-6">
                         <button
                             type="button"
-                            onClick={() => window.location.href = "/api/auth/google"}
+                            onClick={() => window.location.href = `/api/auth/google?redirect=${encodeURIComponent(redirectPath)}`}
                             className="w-full flex items-center justify-center px-4 py-3 border border-gray-200 rounded-full bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                         >
                             <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
@@ -355,12 +367,20 @@ export default function SignupPage() {
 
                     <p className="mt-8 text-center text-sm text-gray-600">
                         Already have an account?{" "}
-                        <Link href="/login" className="font-bold text-gray-900 hover:underline">
+                        <Link href={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="font-bold text-gray-900 hover:underline">
                             Log In
                         </Link>
                     </p>
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function SignupPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center font-serif text-3xl">Loading...</div>}>
+            <SignupContent />
+        </Suspense>
     );
 }

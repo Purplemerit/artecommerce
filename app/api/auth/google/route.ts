@@ -1,7 +1,9 @@
-
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
+    const { searchParams } = new URL(request.url);
+    const redirectPath = searchParams.get('redirect') || '/';
+
     const rootUrl = 'https://accounts.google.com/o/oauth2/v2/auth';
 
     const options = {
@@ -17,6 +19,16 @@ export async function GET(request: NextRequest) {
     };
 
     const qs = new URLSearchParams(options);
+    const response = NextResponse.redirect(`${rootUrl}?${qs.toString()}`);
 
-    return NextResponse.redirect(`${rootUrl}?${qs.toString()}`);
+    // Store redirect path in a cookie for the callback to use
+    response.cookies.set('return_to', redirectPath, {
+        path: '/',
+        maxAge: 60 * 10, // 10 minutes
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+    });
+
+    return response;
 }

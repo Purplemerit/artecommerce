@@ -14,6 +14,7 @@ function VerifyOtpContent() {
     const { verifyOtp } = useAuth();
 
     const userId = searchParams.get("userId");
+    const redirectPath = searchParams.get("redirect") || "/";
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -23,9 +24,9 @@ function VerifyOtpContent() {
 
     useEffect(() => {
         if (!userId) {
-            router.push("/signup");
+            router.push(`/signup?redirect=${encodeURIComponent(redirectPath)}`);
         }
-    }, [userId, router]);
+    }, [userId, router, redirectPath]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -67,7 +68,7 @@ function VerifyOtpContent() {
         const result = await verifyOtp(userId!, otpString);
 
         if (result.success) {
-            router.push("/");
+            router.push(redirectPath);
         } else {
             setError(result.error || "Verification failed");
             setLoading(false);

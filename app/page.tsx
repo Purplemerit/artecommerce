@@ -17,7 +17,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#FDFCF8] text-[#1a1a1a]">
-      <Navbar />
+      <Navbar variant="light" />
 
       {/* Hero Section */}
       <section className="relative h-screen w-full overflow-hidden">

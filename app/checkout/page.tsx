@@ -80,13 +80,24 @@ export default function CheckoutPage() {
     }, [config.checkoutUrgencyDuration]);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            if (!isAuthenticated) {
-                router.push("/login?redirect=/checkout");
-            }
-        }, 500);
-        return () => clearTimeout(timer);
+        // Immediate check to prevent flash of content
+        if (!isAuthenticated) {
+            router.push(`/login?redirect=${encodeURIComponent('/checkout')}`);
+        }
     }, [isAuthenticated, router]);
+
+    // Prevent rendering if not authenticated to maintain premium feel and security
+    if (!isAuthenticated) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-[#faf9f6]">
+                <div className="text-center space-y-4">
+                    <Clock className="w-12 h-12 animate-spin text-gray-300 mx-auto" />
+                    <p className="font-serif text-2xl text-gray-900">Redirecting to login...</p>
+                    <p className="text-gray-500 text-sm">Please sign in to proceed with your acquisition.</p>
+                </div>
+            </div>
+        );
+    }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;

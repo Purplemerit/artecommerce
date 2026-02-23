@@ -32,7 +32,7 @@ const LegalPageLayout: React.FC<LegalPageLayoutProps> = ({
 
             {/* Header Section */}
             <div className="pt-32 pb-16 px-6 max-w-7xl mx-auto text-center">
-                <h1 className="font-serif text-6xl md:text-9xl mb-8 text-gray-900 leading-[0.9] tracking-tight">
+                <h1 className="font-serif text-[48px] mb-8 text-gray-900 leading-[0.9] tracking-tight">
                     {title}
                 </h1>
                 <p className="text-xl text-gray-500 mb-2 font-medium tracking-tight">
