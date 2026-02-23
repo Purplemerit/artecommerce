@@ -26,10 +26,10 @@ export default function AboutPage() {
 
                 <div className="max-w-7xl mx-auto px-4 w-full flex flex-col justify-center items-start text-left relative z-10 h-full min-h-[400px]">
                     <div>
-                        <h1 className="font-serif font-semibold text-[50px] lg:text-[96px] leading-[1.1] lg:leading-[120px] tracking-[4.8px] text-white mb-6 drop-shadow-lg">
+                        <h1 className="font-serif font-semibold text-[42px] md:text-[60px] lg:text-[96px] leading-[1.1] lg:leading-[120px] tracking-tight md:tracking-[4.8px] text-white mb-6 drop-shadow-lg">
                             About the<br /> Studio
                         </h1>
-                        <p className="font-sans font-normal text-[18px] lg:text-[24px] leading-[1.5] lg:leading-[39px] text-white max-w-[783px] drop-shadow-md">
+                        <p className="font-sans font-normal text-[16px] md:text-[20px] lg:text-[24px] leading-[1.5] lg:leading-[39px] text-white max-w-[783px] drop-shadow-md">
                             We curate and create art that belongs in real spaces not just on walls, but in everyday life.
                         </p>
                     </div>
@@ -40,7 +40,7 @@ export default function AboutPage() {
             <section className="py-16 md:py-24 px-4 bg-[#faf9f6]">
                 <div className="max-w-[1400px] mx-auto text-center">
                     <h2 className="font-serif font-normal text-[32px] md:text-[48px] leading-tight md:leading-[60px] text-[#2A2A2A] mb-8 md:mb-[50px]">Art, thoughtfully chosen</h2>
-                    <div className="relative w-full max-w-[1280px] h-[250px] md:h-[395px] mx-auto mb-8 md:mb-[50px] overflow-hidden">
+                    <div className="relative w-full max-w-[1280px] aspect-[16/9] md:h-[395px] mx-auto mb-8 md:mb-[50px] overflow-hidden">
                         <Image
                             src="/images/454691cbcf505d10646bffa5c5a9cbbf3fd0b032.jpg"
                             alt="Textured Art Details"
@@ -59,7 +59,7 @@ export default function AboutPage() {
                 <h2 className="font-serif text-4xl text-center text-[#1a1a1a] mb-20">What Makes Us Different</h2>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                    <div className="relative h-[500px] w-full max-w-md mx-auto">
+                    <div className="relative h-[300px] sm:h-[400px] lg:h-[500px] w-full max-w-md mx-auto">
                         <Image
                             src="/images/b42b8b0262c2e91f1cf84d86d670d9998592af71.jpg"
                             alt="Classical Art"
@@ -150,9 +150,9 @@ export default function AboutPage() {
 
 
             {/* Conscious Choices Section */}
-            <section className="py-24 px-6 max-w-7xl mx-auto">
+            <section className="py-24 px-6 max-w-7xl mx-auto overflow-hidden">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                    <div className="relative aspect-square md:aspect-[4/3] order-2 lg:order-1 bg-gray-100 overflow-hidden min-h-[400px]">
+                    <div className="relative aspect-square md:aspect-[4/3] order-2 lg:order-1 bg-gray-100 overflow-hidden">
                         <Image
                             src="/images/4912b085f3bb8c4501670720da51c32e4c462746.jpg"
                             alt="Landscape"
